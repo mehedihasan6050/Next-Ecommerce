@@ -1,12 +1,25 @@
+import {
+  Shirt,
+  Handbag,
+  Cable,
+  Footprints,
+  Wallet,
+  Glasses,
+  GraduationCap,
+  Tally3,
+} from 'lucide-react';
+
 export const categories = [
-  'Fashion',
-  'Electronics',
-  'Hand Bag',
-  'Shoes',
-  'Wallet',
-  'Sunglass',
-  'Cap',
+  { name: 'All', Icon: Tally3 },
+  { name: 'Fashion', Icon: Shirt },
+  { name: 'Electronics', Icon: Cable },
+  { name: 'Hand Bag', Icon: Handbag },
+  { name: 'Shoes', Icon: Footprints },
+  { name: 'Wallet', Icon: Wallet },
+  { name: 'Sunglass', Icon: Glasses },
+  { name: 'Cap', Icon: GraduationCap },
 ];
+
 export const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
 export const colors = [
   { name: 'Navy', class: 'bg-[#0F172A]' },

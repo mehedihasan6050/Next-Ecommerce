@@ -3,7 +3,6 @@ import { jwtVerify } from 'jose';
 
 const publicRoutes = ['/auth/register', '/auth/login'];
 const superAdminRoutes = ['/admin', '/admin/:path*'];
-const userRoutes = ['/'];
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken')?.value;
@@ -13,27 +12,26 @@ export async function middleware(request: NextRequest) {
     try {
       const { payload } = await jwtVerify(
         accessToken,
-        new TextEncoder().encode(process.env.JWT_SECRET)
+        new TextEncoder().encode(process.env.JWT_SECRET!)
       );
-      const { role } = payload as {
-        role: string;
-      };
+      const { role } = payload as { role: string };
 
+      // ✅ already logged in → prevent visiting login/register
       if (publicRoutes.includes(pathname)) {
         return NextResponse.redirect(
           new URL(role === 'ADMIN' ? '/admin' : '/', request.url)
         );
       }
 
-      if (
-        role === 'ADMIN' &&
-        userRoutes.some(route => pathname.startsWith(route))
-      ) {
+      // ✅ ADMIN entering home → redirect to /admin
+      if (role === 'ADMIN' && pathname === '/') {
         return NextResponse.redirect(new URL('/admin', request.url));
       }
+
+      // ✅ Normal user trying to access /admin → send home
       if (
         role !== 'ADMIN' &&
-        superAdminRoutes.some(route => pathname.startsWith(route))
+        superAdminRoutes.some(route => pathname.startsWith('/admin'))
       ) {
         return NextResponse.redirect(new URL('/', request.url));
       }
@@ -41,6 +39,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     } catch (e) {
       console.error('Token verification failed', e);
+
       const refreshResponse = await fetch(
         'http://localhost:3000/api/auth/refresh-token',
         {
@@ -57,7 +56,6 @@ export async function middleware(request: NextRequest) {
         );
         return response;
       } else {
-        //ur refresh is also failed
         const response = NextResponse.redirect(
           new URL('/auth/login', request.url)
         );

@@ -178,8 +178,6 @@ export const deleteProduct = async (
   }
 };
 
-
-
 //fetch products with filter (client)
 
 export const getProductsForClient = async (
@@ -189,24 +187,24 @@ export const getProductsForClient = async (
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-    const categories = ((req.query.categories as string) || "")
-      .split(",")
+    const categories = ((req.query.categories as string) || '')
+      .split(',')
       .filter(Boolean);
-    const brands = ((req.query.brands as string) || "")
-      .split(",")
+    const brands = ((req.query.brands as string) || '')
+      .split(',')
       .filter(Boolean);
-    const sizes = ((req.query.sizes as string) || "")
-      .split(",")
+    const sizes = ((req.query.sizes as string) || '')
+      .split(',')
       .filter(Boolean);
-    const colors = ((req.query.colors as string) || "")
-      .split(",")
+    const colors = ((req.query.colors as string) || '')
+      .split(',')
       .filter(Boolean);
 
     const minPrice = parseFloat(req.query.minPrice as string) || 0;
     const maxPrice =
       parseFloat(req.query.maxPrice as string) || Number.MAX_SAFE_INTEGER;
-    const sortBy = (req.query.sortBy as string) || "createdAt";
-    const sortOrder = (req.query.sortOrder as "asc" | "desc") || "desc";
+    const sortBy = (req.query.sortBy as string) || 'createdAt';
+    const sortOrder = (req.query.sortOrder as 'asc' | 'desc') || 'desc';
 
     const skip = (page - 1) * limit;
 
@@ -216,7 +214,7 @@ export const getProductsForClient = async (
           ? {
               category: {
                 in: categories,
-                mode: "insensitive",
+                mode: 'insensitive',
               },
             }
           : {},
@@ -224,7 +222,7 @@ export const getProductsForClient = async (
           ? {
               brand: {
                 in: brands,
-                mode: "insensitive",
+                mode: 'insensitive',
               },
             }
           : {},
@@ -264,7 +262,7 @@ export const getProductsForClient = async (
       Math.ceil(total / limit),
       total,
       limit,
-      "Math.ceil(total / limit)"
+      'Math.ceil(total / limit)'
     );
 
     res.status(200).json({
@@ -276,6 +274,6 @@ export const getProductsForClient = async (
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Some error occured!" });
+    res.status(500).json({ success: false, message: 'Some error occured!' });
   }
 };

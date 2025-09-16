@@ -205,11 +205,10 @@ function AddProductModal({ onClose }: AddProductModalProps) {
                   <SelectValue placeholder="Select brand" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="samsung">Samsung</SelectItem>
-                  <SelectItem value="google">Google</SelectItem>
-                  <SelectItem value="nike">Nike</SelectItem>
-                  <SelectItem value="adidas">Adidas</SelectItem>
+                 {
+                  brands.map(b=> <SelectItem key={b} value={b}>{b}</SelectItem>)
+                 } 
+                 
                 </SelectContent>
               </Select>
             </div>
@@ -245,11 +244,9 @@ function AddProductModal({ onClose }: AddProductModalProps) {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="electronics">Electronics</SelectItem>
-                  <SelectItem value="clothing">Clothing</SelectItem>
-                  <SelectItem value="shoes">Shoes</SelectItem>
-                  <SelectItem value="accessories">Accessories</SelectItem>
-                  <SelectItem value="books">Books</SelectItem>
+                 {
+                  categories.map(c=> <SelectItem key={c} value={c}>{c}</SelectItem>)
+                 } 
                 </SelectContent>
               </Select>
             </div>
@@ -266,7 +263,6 @@ function AddProductModal({ onClose }: AddProductModalProps) {
                   <SelectValue placeholder="Select gender" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="unisex">Unisex</SelectItem>
                   <SelectItem value="men">Men</SelectItem>
                   <SelectItem value="women">Women</SelectItem>
                   <SelectItem value="kids">Kids</SelectItem>
