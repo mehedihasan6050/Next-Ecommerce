@@ -36,10 +36,13 @@ export function HomeNavBar() {
             <span className="text-sm font-medium">Sign Up/Sign In</span>
           </div>
 
-          <div className="flex items-center gap-2 text-gray-700 hover:text-gray-900 cursor-pointer">
+          <Link href='/cart' className="flex items-center gap-2 text-gray-700 hover:text-gray-900 cursor-pointer relative">
+            <div className="bg-red-500 text-white w-5 h-5 text-center text-xs rounded-full absolute -top-2 -right-4">
+              (4)
+          </div>
             <ShoppingCart className="h-4 w-4" />
             <span className="text-sm font-medium">Cart</span>
-          </div>
+          </Link>
         </div>
       </div>
     </header>

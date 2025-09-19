@@ -7,6 +7,7 @@ import authRoutes from './routes/auth.route';
 import productRoutes from './routes/product.route';
 import couponRoutes from './routes/coupon.route';
 import settingsRoutes from './routes/settings.route'
+import cartRoutes from './routes/cart.route'
 
 //load all your enviroment variables
 dotenv.config();
@@ -31,6 +32,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/coupon', couponRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/cart", cartRoutes);
 
 
 app.get('/', (req, res) => {
