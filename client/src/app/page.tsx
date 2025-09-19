@@ -15,7 +15,7 @@ function HomePage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const { fetchProductsForClient, products } = useProductStore();
-  console.log(products, 'products');
+
 
 
 
@@ -59,8 +59,6 @@ if (filterType === 'categories' && value === 'All') {
     );
   };
 
-  console.log(banners, featuredProducts);
-  console.log(products, 'products');
 
   return (
     <div className="min-h-screen bg-white">
@@ -157,7 +155,7 @@ if (filterType === 'categories' && value === 'All') {
               ))}
             </div>
 
-            {products.length > 0 ? <div className="grid my-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            {products?.length > 0 ? <div className="grid my-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               {products.slice(0, 5).map(product => (
                 <div
                   key={product.id}
@@ -181,7 +179,7 @@ if (filterType === 'categories' && value === 'All') {
                         ₹{product.price.toLocaleString()}
                       </span>
                       <span className="text-sm text-gray-500 line-through">
-                        ₹{product.originalPrice.toLocaleString()}
+                        ${product.originalPrice.toLocaleString()}
                       </span>
                     </div>
 

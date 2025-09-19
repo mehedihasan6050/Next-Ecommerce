@@ -1,6 +1,6 @@
 import cloudinary from '../config/cloudinary';
 import { AuthenticatedRequest } from '../middlewares/auth.middleware';
-import { Response } from 'express';
+import { Response ,Request } from 'express';
 import { prisma } from '../server';
 import fs from 'fs';
 import { Prisma } from '@prisma/client';
@@ -10,6 +10,9 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
+
+    
+
     const {
       name,
       brand,
@@ -23,18 +26,7 @@ export const createProduct = async (
       originalPrice,
     } = req.body;
 
-    console.log(
-      name,
-      brand,
-      description,
-      category,
-      gender,
-      sizes,
-      colors,
-      price,
-      stock,
-      originalPrice
-    );
+
 
     const files = req.files as Express.Multer.File[];
 
@@ -185,6 +177,26 @@ export const getProductsForClient = async (
   res: Response
 ): Promise<void> => {
   try {
+
+
+    if (req.query.query) {
+      const query = (req.query.query as string || "").trim();
+      if (!query) {
+      res.status(200).json({ message: 'query not provided' });
+      return;
+    }
+
+    const search = await prisma.product.findMany({
+      where: { name: { contains: query, mode: 'insensitive' } },
+      take: 10,
+      select: { id: true, name: true, price: true, images: true },
+    });
+
+      res.status(200).json(search);
+      return
+ }
+
+
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const categories = ((req.query.categories as string) || '')
@@ -277,3 +289,8 @@ export const getProductsForClient = async (
     res.status(500).json({ success: false, message: 'Some error occured!' });
   }
 };
+
+
+
+
+

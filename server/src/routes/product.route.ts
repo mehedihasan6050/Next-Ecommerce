@@ -27,4 +27,5 @@ router.get('/:id', authenticateJwt, getProductByID);
 router.put('/:id', authenticateJwt, isSuperAdmin, updateProduct);
 router.delete('/:id', authenticateJwt, isSuperAdmin, deleteProduct);
 
+
 export default router;

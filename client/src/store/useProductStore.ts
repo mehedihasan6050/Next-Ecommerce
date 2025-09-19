@@ -21,6 +21,8 @@ export interface Product {
 
 interface ProductState {
   products: Product[];
+  search: Product[];
+   setSearch: (search: Product[]) => void;
   isLoading: boolean;
   error: string | null;
   currentPage: number;
@@ -42,12 +44,15 @@ interface ProductState {
     maxPrice?: number;
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
+    query?: string
   }) => Promise<void>;
   setCurrentPage: (page: number) => void;
 }
 
 export const useProductStore = create<ProductState>((set, get) => ({
   products: [],
+  search: [],
+  setSearch: (search: Product[]) => set({ search }),
   isLoading: true,
   error: null,
   currentPage: 1,
@@ -148,6 +153,14 @@ export const useProductStore = create<ProductState>((set, get) => ({
         }
       );
 
+       // যদি query থাকে, শুধু search update করো, products অক্ষত থাকুক
+    if (params.query) {
+      set({
+        search: response.data, // search results
+        isLoading: false,
+      });
+    } else {
+      // Normal fetch, products update করো
       set({
         products: response.data.products,
         currentPage: response.data.currentPage,
@@ -155,9 +168,11 @@ export const useProductStore = create<ProductState>((set, get) => ({
         totalProducts: response.data.totalProducts,
         isLoading: false,
       });
+    }
     } catch (e) {
       set({ error: 'Failed to fetch products', isLoading: false });
     }
   },
   setCurrentPage: (page: number) => set({ currentPage: page }),
+  
 }));
