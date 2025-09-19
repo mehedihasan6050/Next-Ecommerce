@@ -21,8 +21,8 @@ model User {
   updatedAt    DateTime @updatedAt
   refreshToken String?  @unique
   cart         Cart?
+  addresses    Address[]
 }
-
 
 
 model product {
@@ -88,7 +88,29 @@ model CartItem {
   @@unique([cartId, productId, size, color])
 }
 
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  name       String
+  address    String
+  city       String
+  country    String
+  postalCode String
+  phone      String
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+}
+
+
+
+
+
 enum Role{
 USER
 ADMIN
 }
+

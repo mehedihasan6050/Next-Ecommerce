@@ -4,6 +4,7 @@ import arcjet, {
   protectSignup,
   sensitiveInfo,
   shield,
+  slidingWindow,
   validateEmail,
 } from '@arcjet/next';
 
