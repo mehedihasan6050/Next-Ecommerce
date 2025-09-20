@@ -85,3 +85,23 @@ export const createCouponRules = arcjet({
     }),
   ],
 });
+
+export const prePaymentFlowRules = arcjet({
+  key: process.env.ARCJET_KEY!,
+  rules: [
+    shield({ mode: "LIVE" }),
+    detectBot({
+      mode: "LIVE",
+      allow: [],
+    }),
+    validateEmail({
+      mode: "LIVE",
+      block: ["DISPOSABLE", "INVALID", "NO_MX_RECORDS", "FREE"],
+    }),
+    slidingWindow({
+      mode: "LIVE",
+      interval: "10m",
+      max: 5,
+    }),
+  ],
+});
