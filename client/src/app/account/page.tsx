@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Table,
   TableBody,
@@ -13,20 +13,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Address, useAddressStore } from "@/store/useAddressStore";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import Swal from "sweetalert2";
+} from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Address, useAddressStore } from '@/store/useAddressStore';
+import { useOrderStore } from '@/store/useOrderStore';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import Swal from 'sweetalert2';
 
 const initialAddressFormState = {
-  name: "",
-  address: "",
-  city: "",
-  country: "",
-  postalCode: "",
-  phone: "",
+  name: '',
+  address: '',
+  city: '',
+  country: '',
+  postalCode: '',
+  phone: '',
   isDefault: false,
 };
 
@@ -40,15 +41,15 @@ function UserAccountPage() {
     updateAddress,
     deleteAddress,
   } = useAddressStore();
+  const { userOrders, getOrdersByUserId, isLoading } = useOrderStore();
   const [showAddresses, setShowAddresses] = useState(false);
   const [editingAddress, setEditingAddress] = useState<string | null>(null);
   const [formData, setFormData] = useState(initialAddressFormState);
 
-
   useEffect(() => {
     fetchAddresses();
-  }, [fetchAddresses]);
-
+    getOrdersByUserId();
+  }, [fetchAddresses, getOrdersByUserId]);
 
   const handleAddressSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -64,7 +65,7 @@ function UserAccountPage() {
         const result = await createAddress(formData);
         if (result) {
           fetchAddresses();
-          toast.success("Address created successfully");
+          toast.success('Address created successfully');
         }
       }
 
@@ -92,54 +93,57 @@ function UserAccountPage() {
 
   const handleDeleteAddress = async (id: string) => {
     Swal.fire({
-      title: "Are you sure?",
+      title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
-    }).then((result) => {
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(result => {
       if (result.isConfirmed) {
-        deleteAddress(id).then(res => {
-          if (res) {
-             Swal.fire({
-      title: "Deleted!",
-      text: "Your Product has been deleted.",
-      icon: "success"
-      });
-          }
-          fetchAddresses();
-        }).catch(e => {
-          console.log(e)
-        })
+        deleteAddress(id)
+          .then(res => {
+            if (res) {
+              Swal.fire({
+                title: 'Deleted!',
+                text: 'Your Product has been deleted.',
+                icon: 'success',
+              });
+            }
+            fetchAddresses();
+          })
+          .catch(e => {
+            console.log(e);
+          });
       }
-    })}
+    });
+  };
 
   console.log(addresses);
 
   const getStatusColor = (
-    status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED"
+    status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED'
   ) => {
     switch (status) {
-      case "PENDING":
-        return "bg-blue-500";
+      case 'PENDING':
+        return 'bg-blue-500';
 
-      case "PROCESSING":
-        return "bg-yellow-500";
+      case 'PROCESSING':
+        return 'bg-yellow-500';
 
-      case "SHIPPED":
-        return "bg-purple-500";
+      case 'SHIPPED':
+        return 'bg-purple-500';
 
-      case "DELIVERED":
-        return "bg-green-500";
+      case 'DELIVERED':
+        return 'bg-green-500';
 
       default:
-        return "bg-gray-500";
+        return 'bg-gray-500';
     }
   };
 
-  // if (isLoading) return null;
+  if (isLoading) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -156,7 +160,7 @@ function UserAccountPage() {
             <Card>
               <CardContent className="p-6">
                 <h2 className="text-xl font-semibold">Order History</h2>
-             {/* order content */}
+                {/* order content */}
 
                 <div className="overflow-x-auto">
                   <Table>
@@ -170,7 +174,30 @@ function UserAccountPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                     {/* orders row */}
+                      {/* orders row */}
+                      {userOrders.map(order => (
+                        <TableRow key={order.id}>
+                          <TableCell className="font-medium">
+                            {order.id}
+                          </TableCell>
+                          <TableCell>
+                            {new Date(order.createdAt).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            {order.items.length}{' '}
+                            {order.items.length > 1 ? 'Items' : 'Item'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={`${getStatusColor(order.status)}`}
+                            >
+                              {order.status.charAt(0).toUpperCase() +
+                                order.status.slice(1)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>${order.totalPrice.toFixed(2)}</TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </div>
@@ -204,7 +231,7 @@ function UserAccountPage() {
                         id="name"
                         value={formData.name}
                         required
-                        onChange={(e) =>
+                        onChange={e =>
                           setFormData({
                             ...formData,
                             name: e.target.value,
@@ -219,7 +246,7 @@ function UserAccountPage() {
                         id="address"
                         value={formData.address}
                         required
-                        onChange={(e) =>
+                        onChange={e =>
                           setFormData({
                             ...formData,
                             address: e.target.value,
@@ -234,7 +261,7 @@ function UserAccountPage() {
                         id="city"
                         value={formData.city}
                         required
-                        onChange={(e) =>
+                        onChange={e =>
                           setFormData({
                             ...formData,
                             city: e.target.value,
@@ -249,7 +276,7 @@ function UserAccountPage() {
                         id="country"
                         value={formData.country}
                         required
-                        onChange={(e) =>
+                        onChange={e =>
                           setFormData({
                             ...formData,
                             country: e.target.value,
@@ -264,7 +291,7 @@ function UserAccountPage() {
                         id="postalCode"
                         value={formData.postalCode}
                         required
-                        onChange={(e) =>
+                        onChange={e =>
                           setFormData({
                             ...formData,
                             postalCode: e.target.value,
@@ -279,7 +306,7 @@ function UserAccountPage() {
                         id="phone"
                         value={formData.phone}
                         required
-                        onChange={(e) =>
+                        onChange={e =>
                           setFormData({
                             ...formData,
                             phone: e.target.value,
@@ -291,7 +318,7 @@ function UserAccountPage() {
                         <Checkbox
                           id="default"
                           checked={formData.isDefault}
-                          onCheckedChange={(checked) =>
+                          onCheckedChange={checked =>
                             setFormData({
                               ...formData,
                               isDefault: checked as boolean,
@@ -304,7 +331,7 @@ function UserAccountPage() {
                       </div>
                       <div className="flex space-x-2">
                         <Button type="submit">
-                          {editingAddress ? "Update" : "Add"} Address
+                          {editingAddress ? 'Update' : 'Add'} Address
                         </Button>
                         <Button
                           type="button"
@@ -321,14 +348,14 @@ function UserAccountPage() {
                   </form>
                 ) : (
                   <div className="space-y-4">
-                    {addresses.map((address) => (
+                    {addresses.map(address => (
                       <Card key={address.id}>
                         <CardContent className="p-5">
                           <div className="flex flex-col mb-5 justify-between items-start">
                             <p className="font-medium">{address.name}</p>
                             <p className="mb-2 font-bold">{address.address}</p>
                             <p className="mb-2">
-                              {address.city}, {address.country},{" "}
+                              {address.city}, {address.country},{' '}
                               {address.postalCode}
                             </p>
                             {address.isDefault && (
@@ -338,15 +365,15 @@ function UserAccountPage() {
                           <div className="space-x-2">
                             <Button
                               onClick={() => handleEditAddress(address)}
-                              variant={"outline"}
-                              size={"sm"}
+                              variant={'outline'}
+                              size={'sm'}
                             >
                               Edit
                             </Button>
                             <Button
                               onClick={() => handleDeleteAddress(address.id)}
-                              variant={"destructive"}
-                              size={"sm"}
+                              variant={'destructive'}
+                              size={'sm'}
                             >
                               Delete
                             </Button>

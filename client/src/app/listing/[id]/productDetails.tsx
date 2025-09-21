@@ -7,12 +7,12 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ProductDetailsSkeleton from './productSkeleton';
 import { useCartStore } from '@/store/useCartStore';
-import {toast} from 'sonner'
+import { toast } from 'sonner';
 
 function ProductDetailsContent({ id }: { id: string }) {
   const [product, setProduct] = useState<any>(null);
   const { getProductById, isLoading } = useProductStore();
-   const { addToCart } = useCartStore();
+  const { addToCart, fetchCart } = useCartStore();
   // const { addToCart } = useCartStore();
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -45,14 +45,14 @@ function ProductDetailsContent({ id }: { id: string }) {
         quantity: quantity,
       });
 
-      setSelectedSize("");
+      setSelectedSize('');
       setSelectedColor(0);
       setQuantity(1);
 
-      toast.success("Product is added to cart");
+      toast.success('Product is added to cart');
+      fetchCart();
     }
   };
-
 
   console.log(id, product);
 
@@ -151,8 +151,10 @@ function ProductDetailsContent({ id }: { id: string }) {
             </div>
             <div>
               <Button
-                 onClick={handleAddToCart}
-                className={'w-full cursor-pointer bg-black text-white hover:bg-gray-800'}
+                onClick={handleAddToCart}
+                className={
+                  'w-full cursor-pointer bg-black text-white hover:bg-gray-800'
+                }
               >
                 ADD TO CART
               </Button>

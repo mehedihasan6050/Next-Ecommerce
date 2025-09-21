@@ -48,7 +48,7 @@ export const authenticateJwt = (
     });
 };
 
-export const isSuperAdmin = (
+export const isAdmin = (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction

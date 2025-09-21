@@ -1,30 +1,30 @@
-import express from "express";
-import { authenticateJwt, isSuperAdmin } from "../middlewares/auth.middleware";
-import { upload } from "../middlewares/upload.middleware";
+import express from 'express';
+import { authenticateJwt, isAdmin } from '../middlewares/auth.middleware';
+import { upload } from '../middlewares/upload.middleware';
 import {
   addFeatureBanners,
   fetchFeatureBanners,
   getFeaturedProducts,
   updateFeaturedProducts,
-} from "../controllers/settings.controller";
+} from '../controllers/settings.controller';
 
 const router = express.Router();
 
 router.post(
-  "/banners",
+  '/banners',
   authenticateJwt,
-  isSuperAdmin,
-  upload.array("images", 5),
+  isAdmin,
+  upload.array('images', 5),
   addFeatureBanners
 );
 
-router.get("/get-banners", authenticateJwt, fetchFeatureBanners);
+router.get('/get-banners', authenticateJwt, fetchFeatureBanners);
 router.post(
-  "/update-feature-products",
+  '/update-feature-products',
   authenticateJwt,
-  isSuperAdmin,
+  isAdmin,
   updateFeaturedProducts
 );
-router.get("/fetch-feature-products", authenticateJwt, getFeaturedProducts);
+router.get('/fetch-feature-products', authenticateJwt, getFeaturedProducts);
 
 export default router;
