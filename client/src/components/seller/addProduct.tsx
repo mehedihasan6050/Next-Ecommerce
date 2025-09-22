@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import { brands, categories, colors, sizes } from '@/utils/config';
 import { useProductStore } from '@/store/useProductStore';
 import { protectProductFormAction } from '@/action/product';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface AddProductModalProps {
   onClose: () => void;
@@ -37,6 +38,7 @@ interface FormState {
 }
 
 function AddProductModal({ onClose }: AddProductModalProps) {
+  const { user } = useAuthStore();
   const [formState, setFormState] = useState<FormState>({
     name: '',
     brand: '',
@@ -48,12 +50,12 @@ function AddProductModal({ onClose }: AddProductModalProps) {
     originalPrice: '',
   });
 
-
   const [selectedSizes, setSelectSizes] = useState<string[]>([]);
   const [selectedColors, setSelectColors] = useState<string[]>([]);
   const [selectedfiles, setSelectFiles] = useState<File[]>([]);
 
-  const { createProduct ,isLoading, fetchAllProductsForAdmin} = useProductStore();
+  const { createProduct, isLoading, fetchAllProductsForSeller } =
+    useProductStore();
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -92,6 +94,10 @@ function AddProductModal({ onClose }: AddProductModalProps) {
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!user?.id) {
+      return toast.error('please login first');
+    }
+
     const checkFirstLevelFormSanitization = await protectProductFormAction();
 
     if (!checkFirstLevelFormSanitization.success) {
@@ -104,19 +110,17 @@ function AddProductModal({ onClose }: AddProductModalProps) {
       formData.append(Key, value);
     });
 
+    formData.append('sellerId', user.id);
     formData.append('sizes', selectedSizes.join(','));
     formData.append('colors', selectedColors.join(','));
     selectedfiles.forEach(file => formData.append('images', file));
 
-      
     const res = await createProduct(formData);
     if (res) {
       toast('Product Created successfully');
-        fetchAllProductsForAdmin()
-        onClose();
+      fetchAllProductsForSeller();
+      onClose();
     }
-        
-     
   };
 
   return (
@@ -205,10 +209,11 @@ function AddProductModal({ onClose }: AddProductModalProps) {
                   <SelectValue placeholder="Select brand" />
                 </SelectTrigger>
                 <SelectContent>
-                 {
-                  brands.map(b=> <SelectItem key={b} value={b}>{b}</SelectItem>)
-                 } 
-                 
+                  {brands.map(b => (
+                    <SelectItem key={b} value={b}>
+                      {b}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -244,9 +249,11 @@ function AddProductModal({ onClose }: AddProductModalProps) {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                 {
-                  categories.map(c=> <SelectItem key={c} value={c}>{c}</SelectItem>)
-                 } 
+                  {categories.map((c, i) => (
+                    <SelectItem key={i} value={c.name}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

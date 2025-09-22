@@ -17,17 +17,23 @@ export interface Product {
   rating?: number;
   soldCount: number;
   images: string[];
+  sellerId: string;
 }
 
 interface ProductState {
   products: Product[];
   search: Product[];
-   setSearch: (search: Product[]) => void;
+  setSearch: (search: Product[]) => void;
   isLoading: boolean;
   error: string | null;
+  isAddOpen: boolean;
+  isEditOpen: string | null;
+  setAddOpen: (value: boolean) => void;
+  setEditOpen: (id: string | null) => void;
   currentPage: number;
   totalPages: number;
   totalProducts: number;
+  fetchAllProductsForSeller: () => Promise<void>;
   fetchAllProductsForAdmin: () => Promise<void>;
   createProduct: (productData: FormData) => Promise<Product>;
   updateProduct: (id: string, productData: FormData) => Promise<Product>;
@@ -44,7 +50,7 @@ interface ProductState {
     maxPrice?: number;
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
-    query?: string
+    query?: string;
   }) => Promise<void>;
   setCurrentPage: (page: number) => void;
 }
@@ -55,9 +61,28 @@ export const useProductStore = create<ProductState>((set, get) => ({
   setSearch: (search: Product[]) => set({ search }),
   isLoading: true,
   error: null,
+  isAddOpen: false,
+  isEditOpen: null,
+  setAddOpen: value => set({ isAddOpen: value }),
+  setEditOpen: id => set({ isEditOpen: id }),
   currentPage: 1,
   totalPages: 1,
   totalProducts: 0,
+  fetchAllProductsForSeller: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.get(
+        `${API_ROUTES.PRODUCTS}/fetch-seller-products`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      set({ products: response.data, isLoading: false });
+    } catch (e) {
+      set({ error: 'Failed to fetch product', isLoading: false });
+    }
+  },
   fetchAllProductsForAdmin: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -153,26 +178,25 @@ export const useProductStore = create<ProductState>((set, get) => ({
         }
       );
 
-       // যদি query থাকে, শুধু search update করো, products অক্ষত থাকুক
-    if (params.query) {
-      set({
-        search: response.data, // search results
-        isLoading: false,
-      });
-    } else {
-      // Normal fetch, products update করো
-      set({
-        products: response.data.products,
-        currentPage: response.data.currentPage,
-        totalPages: response.data.totalPages,
-        totalProducts: response.data.totalProducts,
-        isLoading: false,
-      });
-    }
+      // যদি query থাকে, শুধু search update করো, products অক্ষত থাকুক
+      if (params.query) {
+        set({
+          search: response.data, // search results
+          isLoading: false,
+        });
+      } else {
+        // Normal fetch, products update করো
+        set({
+          products: response.data.products,
+          currentPage: response.data.currentPage,
+          totalPages: response.data.totalPages,
+          totalProducts: response.data.totalProducts,
+          isLoading: false,
+        });
+      }
     } catch (e) {
       set({ error: 'Failed to fetch products', isLoading: false });
     }
   },
   setCurrentPage: (page: number) => set({ currentPage: page }),
-  
 }));

@@ -78,7 +78,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
- function SalesChart() {
+function SalesChart() {
   return (
     <Card className="bg-white border-gray-200">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -137,4 +137,4 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     </Card>
   );
 }
-export default SalesChart
+export default SalesChart;

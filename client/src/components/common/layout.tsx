@@ -1,21 +1,20 @@
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
-import HomeNavBar from "../home/Navbar";
+import { usePathname } from 'next/navigation';
+import HomeNavBar from '../home/Navbar';
 
-
-const pathsNotToShowHeaders = ["/auth", "/admin"];
+const pathsNotToShowHeaders = ['/auth', '/seller', '/admin'];
 
 function CommonLayout({ children }: { children: React.ReactNode }) {
   const pathName = usePathname();
 
-  const showHeader = !pathsNotToShowHeaders.some((currentPath) =>
+  const showHeader = !pathsNotToShowHeaders.some(currentPath =>
     pathName.startsWith(currentPath)
   );
 
   return (
     <div className="min-h-screen bg-white">
-      {showHeader && <HomeNavBar/>}
+      {showHeader && <HomeNavBar />}
       <main>{children}</main>
     </div>
   );

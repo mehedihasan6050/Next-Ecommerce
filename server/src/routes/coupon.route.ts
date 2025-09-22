@@ -1,9 +1,10 @@
 import express from 'express';
-import { authenticateJwt, isAdmin } from '../middlewares/auth.middleware';
+import { authenticateJwt, isSeller } from '../middlewares/auth.middleware';
 import {
   createCoupon,
   deleteCoupon,
   fetchAllCoupons,
+  fetchAllCouponSeller,
 } from '../controllers/coupon.controller';
 
 const router = express.Router();
@@ -11,7 +12,8 @@ const router = express.Router();
 router.use(authenticateJwt);
 
 router.get('/fetch-all-coupons', fetchAllCoupons);
-router.post('/create-coupon', isAdmin, createCoupon);
-router.delete('/:id', isAdmin, deleteCoupon);
+router.get('/fetch-all-coupons-seller', isSeller, fetchAllCouponSeller);
+router.post('/create-coupon', isSeller, createCoupon);
+router.delete('/:id', isSeller, deleteCoupon);
 
 export default router;

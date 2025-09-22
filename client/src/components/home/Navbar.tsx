@@ -130,6 +130,11 @@ export function HomeNavBar() {
                   <DropdownMenuItem>
                     <Link href="/account">My Account</Link>
                   </DropdownMenuItem>
+                  {user?.role === 'SELLER' && (
+                    <DropdownMenuItem>
+                      <Link href="/seller">Seller DashBoard</Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem>
                     <button onClick={handleLogout} className="cursor-pointer">
                       Logout

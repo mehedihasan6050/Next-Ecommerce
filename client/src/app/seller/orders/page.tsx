@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -15,41 +15,40 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { toast } from "sonner";
-import { AdminOrder, useOrderStore } from "@/store/useOrderStore";
-import { useEffect } from "react";
+} from '@/components/ui/table';
+import { toast } from 'sonner';
+import { useEffect } from 'react';
+import { useOrderStore } from '@/store/useOrderStore';
 
-type OrderStatus = "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED";
+type OrderStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED';
 
-function AdminManageOrdersPage() {
-  const { getAllOrders, adminOrders, updateOrderStatus } = useOrderStore();
+function ManageOrdersPage() {
+  const { getAllOrders, sellerOrders, updateOrderStatus } = useOrderStore();
 
-
-  console.log(adminOrders);
+  console.log(sellerOrders);
 
   useEffect(() => {
     getAllOrders();
   }, [getAllOrders]);
 
   const getStatusColor = (
-    status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED"
+    status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED'
   ) => {
     switch (status) {
-      case "PENDING":
-        return "bg-blue-500";
+      case 'PENDING':
+        return 'bg-blue-500';
 
-      case "PROCESSING":
-        return "bg-yellow-500";
+      case 'PROCESSING':
+        return 'bg-yellow-500';
 
-      case "SHIPPED":
-        return "bg-purple-500";
+      case 'SHIPPED':
+        return 'bg-purple-500';
 
-      case "DELIVERED":
-        return "bg-green-500";
+      case 'DELIVERED':
+        return 'bg-green-500';
 
       default:
-        return "bg-gray-500";
+        return 'bg-gray-500';
     }
   };
 
@@ -58,7 +57,8 @@ function AdminManageOrdersPage() {
     newStatus: OrderStatus
   ) => {
     await updateOrderStatus(orderId, newStatus);
-    toast("Status updated successfully");
+    getAllOrders();
+    toast('Status updated successfully');
   };
 
   return (
@@ -80,14 +80,14 @@ function AdminManageOrdersPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {adminOrders.length === 0 ? (
+          {sellerOrders.length === 0 ? (
             <TableRow>
               <TableCell colSpan={8} className="text-center">
                 No Orders Found
               </TableCell>
             </TableRow>
           ) : (
-            adminOrders.map((order) => (
+            sellerOrders.map(order => (
               <TableRow key={order.id}>
                 <TableCell className="font-semibold">{order.id}</TableCell>
                 <TableCell>
@@ -97,8 +97,8 @@ function AdminManageOrdersPage() {
                 <TableCell>{order.totalPrice.toFixed(2)}</TableCell>
                 <TableCell>{order.paymentStatus}</TableCell>
                 <TableCell>
-                  {order.items.length}{" "}
-                  {order.items.length > 1 ? "Items" : "Item"}
+                  {order.items.length}{' '}
+                  {order.items.length > 1 ? 'Items' : 'Item'}
                 </TableCell>
                 <TableCell>
                   <Badge className={`${getStatusColor(order.status)}`}>
@@ -109,7 +109,7 @@ function AdminManageOrdersPage() {
                 <TableCell>
                   <Select
                     defaultValue={order.status}
-                    onValueChange={(value) =>
+                    onValueChange={value =>
                       handleStatusUpdate(order.id, value as OrderStatus)
                     }
                   >
@@ -133,4 +133,4 @@ function AdminManageOrdersPage() {
   );
 }
 
-export default AdminManageOrdersPage;
+export default ManageOrdersPage;

@@ -11,6 +11,7 @@ interface OrderItem {
   size?: string;
   color?: string;
   price: number;
+  sellerId: string;
 }
 
 export interface Order {
@@ -28,7 +29,7 @@ export interface Order {
   updatedAt: string;
 }
 
-export interface AdminOrder {
+export interface SellerOrder {
   id: string;
   userId: string;
   addressId: string;
@@ -49,11 +50,9 @@ export interface AdminOrder {
 }
 
 interface OrderStore {
-  currentOrder: Order | null;
   isLoading: boolean;
-  isPaymentProcessing: boolean;
   userOrders: Order[];
-  adminOrders: AdminOrder[];
+  sellerOrders: SellerOrder[];
   error: string | null;
   getOrder: (orderId: string) => Promise<Order | null>;
   updateOrderStatus: (
@@ -62,16 +61,13 @@ interface OrderStore {
   ) => Promise<boolean>;
   getAllOrders: () => Promise<Order[] | null>;
   getOrdersByUserId: () => Promise<Order[] | null>;
-  setCurrentOrder: (order: Order | null) => void;
 }
 
 export const useOrderStore = create<OrderStore>((set, get) => ({
-  currentOrder: null,
   isLoading: true,
   error: null,
-  isPaymentProcessing: false,
   userOrders: [],
-  adminOrders: [],
+  sellerOrders: [],
   updateOrderStatus: async (orderId, status) => {
     set({ isLoading: true, error: null });
     try {
@@ -108,10 +104,10 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await axios.get(
-        `${API_ROUTES.ORDER}/get-all-orders-for-admin`,
+        `${API_ROUTES.ORDER}/get-all-orders-for-seller`,
         { withCredentials: true }
       );
-      set({ isLoading: false, adminOrders: response.data });
+      set({ isLoading: false, sellerOrders: response.data });
       return response.data;
     } catch (error) {
       set({ error: 'Failed to fetch all orders for admin', isLoading: false });
@@ -132,7 +128,6 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
       return null;
     }
   },
-  setCurrentOrder: order => set({ currentOrder: order }),
   getOrder: async orderId => {
     set({ isLoading: true, error: null });
     try {

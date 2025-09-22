@@ -1,11 +1,8 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Table,
   TableBody,
@@ -18,8 +15,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Address, useAddressStore } from '@/store/useAddressStore';
 import { useOrderStore } from '@/store/useOrderStore';
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
 import Swal from 'sweetalert2';
+import { Button } from "@/components/ui/button"
+import * as React from "react"
+import {toast} from 'sonner'
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useAuthStore } from "@/store/useAuthStore"
 
 const initialAddressFormState = {
   name: '',
@@ -41,10 +43,13 @@ function UserAccountPage() {
     updateAddress,
     deleteAddress,
   } = useAddressStore();
+
   const { userOrders, getOrdersByUserId, isLoading } = useOrderStore();
   const [showAddresses, setShowAddresses] = useState(false);
   const [editingAddress, setEditingAddress] = useState<string | null>(null);
   const [formData, setFormData] = useState(initialAddressFormState);
+  const {user, roleRequest} = useAuthStore()
+
 
   useEffect(() => {
     fetchAddresses();
@@ -120,7 +125,40 @@ function UserAccountPage() {
     });
   };
 
-  console.log(addresses);
+  const handleRequest = async () => {
+
+
+    if(user?.role === "SELLER") {
+      return toast.info("You've Already Seller")
+    }
+
+    if(user?.roleRequest) {
+      return toast.info("You've Already Requested")
+    }
+
+   Swal.fire({
+  title: "Are you sure?",
+  text: "You won't be able to revert this!",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#2e8b57",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Yes, Request"
+}).then((result) => {
+  if (result.isConfirmed) {
+    roleRequest() 
+      .then(success => {
+        if (success) {
+      Swal.fire({
+      title: "Requested!",
+      text: "If Admin Approved Your Request you are beacome a seller",
+      icon: "success"
+    });
+      }
+    })
+  }
+});
+  }
 
   const getStatusColor = (
     status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED'
@@ -143,18 +181,23 @@ function UserAccountPage() {
     }
   };
 
+  console.log(user)
+
   if (isLoading) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
-        <div className="mb-8">
+        <div className="mb-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold">MY ACCOUNT</h1>
+          <Button disabled={user?.roleRequest} onClick={handleRequest} className='text-xl font-bold cursor-pointer'>{user?.roleRequest? "You've Already Requested" : 'Request For Seller'}</Button>
+     
         </div>
         <Tabs defaultValue="orders" className="space-y-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="orders">Order History</TabsTrigger>
             <TabsTrigger value="addresses">Addresses</TabsTrigger>
+          
           </TabsList>
           <TabsContent value="orders">
             <Card>

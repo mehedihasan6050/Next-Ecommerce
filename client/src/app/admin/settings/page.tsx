@@ -1,15 +1,14 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { useProductStore } from "@/store/useProductStore";
-import { useSettingsStore } from "@/store/useSettingsStore";
-import { ImageIcon, Upload, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
+import { useProductStore } from '@/store/useProductStore';
+import { useSettingsStore } from '@/store/useSettingsStore';
+import { ImageIcon, Upload, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 function SettingsPage() {
   const [uploadedFiles, setuploadedFiles] = useState<File[]>([]);
@@ -27,7 +26,6 @@ function SettingsPage() {
   } = useSettingsStore();
   const pageLoadRef = useRef(false);
 
-
   useEffect(() => {
     if (!pageLoadRef.current) {
       fetchBanners();
@@ -37,7 +35,7 @@ function SettingsPage() {
     }
   }, [fetchAllProductsForAdmin, fetchFeaturedProducts, fetchBanners]);
 
-  console.log(products, "products");
+  console.log(products, 'products');
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -47,13 +45,13 @@ function SettingsPage() {
   };
 
   const removeImage = (getCurrentIndex: number) => {
-    setuploadedFiles((prev) => prev.filter((_, i) => i !== getCurrentIndex));
+    setuploadedFiles(prev => prev.filter((_, i) => i !== getCurrentIndex));
   };
 
   const handleProductSelection = (productId: string) => {
-    setSelectedProducts((prev) => {
+    setSelectedProducts(prev => {
       if (prev.includes(productId)) {
-        return prev.filter((id) => id !== productId);
+        return prev.filter(id => id !== productId);
       }
 
       if (prev.length > 8) {
@@ -82,7 +80,7 @@ function SettingsPage() {
   };
 
   useEffect(() => {
-    setSelectedProducts(featuredProducts.map((pro) => pro.id));
+    setSelectedProducts(featuredProducts.map(pro => pro.id));
   }, [featuredProducts]);
 
   return (
@@ -123,12 +121,11 @@ function SettingsPage() {
                   <img
                     src={URL.createObjectURL(file)}
                     alt={`Uploaded image ${index + 1}`}
-                    
                     className="w-full h-32 object-cover rounded-md"
                   />
                   <Button
                     variant="destructive"
-                    size={"icon"}
+                    size={'icon'}
                     onClick={() => removeImage(index)}
                     className="absolute top-2 right-2 hidden group-hover:flex"
                   >
@@ -154,12 +151,12 @@ function SettingsPage() {
               Select up to 8 products to feature on client panel
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {products.map((product) => (
+              {products.map(product => (
                 <div
                   className={`relative p-4 border rounded-lg ${
                     selectedProducts.includes(product.id)
-                      ? "border-blue-600 bg-blue-50"
-                      : "border-gray-200"
+                      ? 'border-blue-600 bg-blue-50'
+                      : 'border-gray-200'
                   }`}
                   key={product.id}
                 >
@@ -195,7 +192,7 @@ function SettingsPage() {
               onClick={handleSaveChanges}
               className="w-full"
             >
-              {isLoading ? "Saving Changes..." : "Save Changes"}
+              {isLoading ? 'Saving Changes...' : 'Save Changes'}
             </Button>
           </div>
         </div>

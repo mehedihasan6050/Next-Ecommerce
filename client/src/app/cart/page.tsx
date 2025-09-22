@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useAuthStore } from "@/store/useAuthStore";
-import { useCartStore } from "@/store/useCartStore";
-import { Minus, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useCartStore } from '@/store/useCartStore';
+import { Minus, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 function UserCartPage() {
   const {
@@ -58,7 +58,7 @@ function UserCartPage() {
               </tr>
             </thead>
             <tbody>
-              {items.map((item) => (
+              {items.map(item => (
                 <tr key={item.id} className="border-t">
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-4">
@@ -91,8 +91,8 @@ function UserCartPage() {
                         onClick={() =>
                           handleUpdateQuantity(item.id, item.quantity - 1)
                         }
-                        variant={"outline"}
-                        size={"icon"}
+                        variant={'outline'}
+                        size={'icon'}
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
@@ -100,7 +100,7 @@ function UserCartPage() {
                         type="number"
                         className="w-16 text-center"
                         value={item.quantity}
-                        onChange={(e) =>
+                        onChange={e =>
                           handleUpdateQuantity(
                             item.id,
                             parseInt(e.target.value)
@@ -112,8 +112,8 @@ function UserCartPage() {
                         onClick={() =>
                           handleUpdateQuantity(item.id, item.quantity + 1)
                         }
-                        variant={"outline"}
-                        size={"icon"}
+                        variant={'outline'}
+                        size={'icon'}
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
@@ -134,13 +134,13 @@ function UserCartPage() {
               <span className="font-bold ml-4">${total}</span>
             </div>
             <Button
-              onClick={() => router.push("/checkout")}
+              onClick={() => router.push('/checkout')}
               className="w-full bg-black text-white"
             >
               PROCEED TO CHECKOUT
             </Button>
             <Button
-              onClick={() => router.push("/listing")}
+              onClick={() => router.push('/listing')}
               className="w-full mt-2"
               variant="outline"
             >

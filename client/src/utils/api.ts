@@ -6,4 +6,5 @@ export const API_ROUTES = {
   CART: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart`,
   ADDRESS: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address`,
   ORDER: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/order`,
+  DASHBOARD: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dashboard`,
 };

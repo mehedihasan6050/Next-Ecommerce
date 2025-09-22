@@ -95,6 +95,7 @@ export const createOrder = async (
               size: item.size,
               color: item.color,
               price: item.price,
+              sellerId: item.sellerId,
             })),
           },
         },
@@ -223,7 +224,7 @@ export const updateOrderStatus = async (
   }
 };
 
-export const getAllOrdersForAdmin = async (
+export const getAllOrdersForSeller = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
@@ -236,11 +237,17 @@ export const getAllOrdersForAdmin = async (
         success: false,
         message: 'Unauthenticated user',
       });
-
       return;
     }
 
     const orders = await prisma.order.findMany({
+      where: {
+        items: {
+          some: {
+            sellerId: userId,
+          },
+        },
+      },
       include: {
         items: true,
         address: true,
@@ -258,7 +265,7 @@ export const getAllOrdersForAdmin = async (
   } catch (e) {
     res.status(500).json({
       success: false,
-      message: 'Unexpected error occured!',
+      message: 'Unexpected error occurred!',
     });
   }
 };

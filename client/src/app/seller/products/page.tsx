@@ -13,47 +13,48 @@ import { useProductStore } from '@/store/useProductStore';
 import { Pencil, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import AddProductModal from '@/components/admin/addProduct';
-import UpdateProductModal from '@/components/admin/updateProduct';
-import Swal from 'sweetalert2'
+import AddProductModal from '@/components/seller/addProduct';
+import UpdateProductModal from '@/components/seller/updateProduct';
+import Swal from 'sweetalert2';
 
-function AdminProductPage() {
-  const [isAddOpen,setAddOpen] = useState<boolean>()
-  const [isEditOpen,setEditOpen] = useState<string | null>(null)
+function ProductPage() {
   const {
     products,
-    fetchAllProductsForAdmin,
+    fetchAllProductsForSeller,
     deleteProduct,
+    setEditOpen,
+    isEditOpen,
+    setAddOpen,
+    isAddOpen,
   } = useProductStore();
 
   useEffect(() => {
-    fetchAllProductsForAdmin();
-  }, [fetchAllProductsForAdmin]);
+    fetchAllProductsForSeller();
+  }, [fetchAllProductsForSeller]);
 
   async function handleDeleteProduct(getId: string) {
     Swal.fire({
-  title: "Are you sure?",
-  text: "You won't be able to revert this!",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#3085d6",
-  cancelButtonColor: "#d33",
-  confirmButtonText: "Yes, delete it!"
-}).then((result) => {
-  if (result.isConfirmed) {
-    deleteProduct(getId).then(res => {
-    if (res)
-        Swal.fire({
-      title: "Deleted!",
-      text: "Your Product has been deleted.",
-      icon: "success"
-      });
-    fetchAllProductsForAdmin();
-    })
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(result => {
+      if (result.isConfirmed) {
+        deleteProduct(getId).then(res => {
+          if (res)
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Your Product has been deleted.',
+              icon: 'success',
+            });
+          fetchAllProductsForSeller();
+        });
+      }
+    });
   }
-});
-  }
-
 
   return (
     <div className="p-6">
@@ -126,7 +127,7 @@ function AdminProductPage() {
                           </Button>
                           <Button
                             onClick={() => handleDeleteProduct(product.id)}
-                            className='cursor-pointer'
+                            className="cursor-pointer"
                             variant={'ghost'}
                             size={'icon'}
                           >
@@ -156,4 +157,4 @@ function AdminProductPage() {
   );
 }
 
-export default AdminProductPage;
+export default ProductPage;

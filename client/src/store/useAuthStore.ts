@@ -7,12 +7,22 @@ type User = {
   id: string;
   name: string | null;
   email: string;
-  role: 'USER' | 'ADMIN';
+  role: 'USER' | 'ADMIN' | 'SELLER';
+  roleRequest: boolean
 };
+
+type requestedUser= {
+ id: string,
+ email: string,
+ roleRequest: boolean,
+ name: string,
+ role: string
+}
 
 type AuthStore = {
   user: User | null;
   isLoading: boolean;
+  requestUser: requestedUser[];
   error: string | null;
   register: (
     name: string,
@@ -22,6 +32,9 @@ type AuthStore = {
   login: (name: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   refreshAccessToken: () => Promise<boolean>;
+  roleChange: (id: string) => Promise<boolean>;
+  roleRequest: () => Promise<boolean>;
+  fetchRequest: () => Promise<void>
 };
 
 const axiosInstance = axios.create({
@@ -33,6 +46,7 @@ export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
       user: null,
+      requestUser: [],
       isLoading: false,
       error: null,
       register: async (name, email, password) => {
@@ -100,6 +114,41 @@ export const useAuthStore = create<AuthStore>()(
           return false;
         }
       },
+      roleChange: async (id: string) => {
+        try {
+          set({ isLoading: true, error: null });
+          await axiosInstance.patch(`/role-change/${id}`)
+          set({ isLoading: false });
+          return true
+        } catch (error) {
+           console.log(error)
+           return false
+         
+        }
+      },
+      roleRequest: async () => {
+        try {
+          set({ isLoading: true, error: null });
+          await axiosInstance.patch('/role-request')
+          set({ isLoading: false });
+          return true
+        } catch (error) {
+          console.log(error)
+           return false
+         
+        }
+      },
+       fetchRequest: async () => {
+        try {
+          set({ isLoading: true, error: null });
+         const res = await axiosInstance.get('/fetch-request')
+        set({requestUser: res.data, isLoading: false });
+         
+        } catch (error) {
+          console.log(error)
+          set({error: 'somthng went wrong'}) 
+        }
+      }
     }),
     {
       name: 'auth-storage',

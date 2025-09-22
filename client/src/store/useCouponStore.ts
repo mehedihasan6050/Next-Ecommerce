@@ -1,6 +1,6 @@
-import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
-import { create } from "zustand";
+import { API_ROUTES } from '@/utils/api';
+import axios from 'axios';
+import { create } from 'zustand';
 
 export interface Coupon {
   id: string;
@@ -10,15 +10,18 @@ export interface Coupon {
   endDate: string;
   usageLimit: number;
   usageCount: number;
+  sellerId: string;
 }
 
 interface CouponStore {
   couponList: Coupon[];
   isLoading: boolean;
   error: string | null;
+  createOpen: boolean;
+  setCreateOpen: (value: boolean) => void;
   fetchCoupons: () => Promise<void>;
   createCoupon: (
-    coupon: Omit<Coupon, "id" | "usageCount">
+    coupon: Omit<Coupon, 'id' | 'usageCount'>
   ) => Promise<Coupon | null>;
   deleteCoupon: (id: string) => Promise<boolean>;
 }
@@ -27,6 +30,8 @@ export const useCouponStore = create<CouponStore>((set, get) => ({
   couponList: [],
   isLoading: false,
   error: null,
+  createOpen: false,
+  setCreateOpen: (value) => set({ createOpen: value }),
   fetchCoupons: async () => {
     set({ isLoading: true, error: null });
     try {
@@ -36,10 +41,10 @@ export const useCouponStore = create<CouponStore>((set, get) => ({
       );
       set({ couponList: response.data.couponList, isLoading: false });
     } catch (e) {
-      set({ isLoading: false, error: "Failed to fetch coupons" });
+      set({ isLoading: false, error: 'Failed to fetch coupons' });
     }
   },
-  createCoupon: async (coupon) => {
+  createCoupon: async coupon => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(
@@ -51,7 +56,7 @@ export const useCouponStore = create<CouponStore>((set, get) => ({
       set({ isLoading: false });
       return response.data.coupon;
     } catch (e) {
-      set({ isLoading: false, error: "Failed to fetch coupons" });
+      set({ isLoading: false, error: 'Failed to fetch coupons' });
       return null;
     }
   },
@@ -64,7 +69,7 @@ export const useCouponStore = create<CouponStore>((set, get) => ({
       set({ isLoading: false });
       return response.data.success;
     } catch (error) {
-      set({ isLoading: false, error: "Failed to fetch coupons" });
+      set({ isLoading: false, error: 'Failed to fetch coupons' });
       return null;
     }
   },

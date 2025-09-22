@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
@@ -8,20 +8,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useCouponStore } from "@/store/useCouponStore";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { Trash2 } from "lucide-react";
-import {toast} from 'sonner'
-import CreateCouponModal from "@/components/admin/createCoupon";
-import Swal from "sweetalert2";
+} from '@/components/ui/table';
+import { useCouponStore } from '@/store/useCouponStore';
+import { useEffect, useRef, useState } from 'react';
+import { format } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
+import { Trash2 } from 'lucide-react';
+import CreateCouponModal from '@/components/seller/createCoupon';
+import Swal from 'sweetalert2';
 
-function AdminCouponsPage() {
-  const [createOpen ,setOpen] = useState<boolean>(false)
-  const {  couponList, fetchCoupons, deleteCoupon } =
+function CouponsPage() {
+  const { couponList, fetchCoupons, deleteCoupon, setCreateOpen, createOpen } =
     useCouponStore();
   const fetchCouponRef = useRef(false);
 
@@ -33,36 +30,38 @@ function AdminCouponsPage() {
   }, [fetchCoupons]);
 
   const handleDeleteCoupon = async (id: string) => {
-     Swal.fire({
-      title: "Are you sure?",
+    Swal.fire({
+      title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
-    }).then((result) => {
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(result => {
       if (result.isConfirmed) {
         deleteCoupon(id).then(res => {
-        if (res)
+          if (res)
             Swal.fire({
-          title: "Deleted!",
-          text: "Your Coupon has been deleted.",
-          icon: "success"
-          });
-        fetchCoupons();
-        })
+              title: 'Deleted!',
+              text: 'Your Coupon has been deleted.',
+              icon: 'success',
+            });
+          fetchCoupons();
+        });
       }
     });
   };
-
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex flex-col gap-6">
         <header className="flex items-center justify-between">
           <h1>All Coupons</h1>
-          <Button className="cursor-pointer" onClick={() => setOpen(true)}>
+          <Button
+            className="cursor-pointer"
+            onClick={() => setCreateOpen(true)}
+          >
             Add New Coupon
           </Button>
         </header>
@@ -79,7 +78,7 @@ function AdminCouponsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {couponList.map((coupon) => (
+            {couponList.map(coupon => (
               <TableRow key={coupon.id}>
                 <TableCell>
                   <p className="font-semibold">{coupon.code}</p>
@@ -93,24 +92,24 @@ function AdminCouponsPage() {
                   </p>
                 </TableCell>
                 <TableCell>
-                  {format(new Date(coupon.startDate), "dd MMM yyyy")}
+                  {format(new Date(coupon.startDate), 'dd MMM yyyy')}
                 </TableCell>
                 <TableCell>
-                  {format(new Date(coupon.endDate), "dd MMM yyyy")}
+                  {format(new Date(coupon.endDate), 'dd MMM yyyy')}
                 </TableCell>
                 <TableCell>
                   <Badge>
                     {new Date(coupon.endDate) > new Date()
-                      ? "Active"
-                      : "Expired"}
+                      ? 'Active'
+                      : 'Expired'}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   <Button
                     onClick={() => handleDeleteCoupon(coupon.id)}
-                    className='cursor-pointer'
+                    className="cursor-pointer"
                     variant="ghost"
-                    size={"sm"}
+                    size={'sm'}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -119,12 +118,13 @@ function AdminCouponsPage() {
             ))}
           </TableBody>
         </Table>
+        {couponList.length === 0 && (
+          <p className="text-center">Coupon Not Created</p>
+        )}
       </div>
-      {
-        createOpen && <CreateCouponModal onClose={()=> setOpen(false)}/>
-      }
+      {createOpen && <CreateCouponModal onClose={() => setCreateOpen(false)} />}
     </div>
   );
 }
 
-export default AdminCouponsPage;
+export default CouponsPage;

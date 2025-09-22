@@ -1,9 +1,11 @@
-import { Search, Bell, ChevronDown, Menu } from 'lucide-react';
+import { Search, Bell, Menu } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useAuthStore } from '@/store/useAuthStore';
 
-export function AdminNavBar() {
+export function NavBar() {
+  const { user } = useAuthStore();
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -32,18 +34,23 @@ export function AdminNavBar() {
           </div>
           <div className="flex items-center gap-3">
             <Avatar className="w-8 h-8">
-              <AvatarImage src="/woman-profile.png" />
-              <AvatarFallback>MR</AvatarFallback>
+              <AvatarFallback>
+                {user?.name
+                  ?.trim()
+                  .split(/\s+/)
+                  .map(word => word[0])
+                  .join('')
+                  .toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <div className="text-sm">
-              <div className="font-medium text-gray-900">Moni Roy</div>
-              <div className="text-gray-500">Admin</div>
+              <div className="font-medium text-gray-900">{user?.name}</div>
+              <div className="text-gray-500">{user?.role}</div>
             </div>
-           
           </div>
         </div>
       </div>
     </header>
   );
 }
-export default AdminNavBar
+export default NavBar;

@@ -9,10 +9,10 @@ import {
 } from 'lucide-react';
 
 type Statistics = {
-  totalOrders: number;
-  completedOrders: number;
   totalSales: number;
   totalCustomers: number;
+  totalOrders: number;
+  pendingOrders: number;
 };
 
 type Props = {
@@ -22,7 +22,7 @@ type Props = {
 function MetricsCards({ statistics }: Props) {
   const metrics = [
     {
-      title: 'Total User',
+      title: 'Total Customer',
       value: statistics?.totalCustomers,
       change: '8.5% Up from yesterday',
       trend: 'up',
@@ -49,8 +49,8 @@ function MetricsCards({ statistics }: Props) {
       iconColor: 'text-green-600',
     },
     {
-      title: 'Completed Order',
-      value: statistics?.completedOrders,
+      title: 'Pending Order',
+      value: statistics?.pendingOrders,
       change: '1.8% Up from yesterday',
       trend: 'up',
       icon: Clock,

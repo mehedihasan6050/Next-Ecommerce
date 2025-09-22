@@ -13,7 +13,6 @@ function ProductDetailsContent({ id }: { id: string }) {
   const [product, setProduct] = useState<any>(null);
   const { getProductById, isLoading } = useProductStore();
   const { addToCart, fetchCart } = useCartStore();
-  // const { addToCart } = useCartStore();
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState(0);

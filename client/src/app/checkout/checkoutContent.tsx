@@ -1,34 +1,34 @@
-"use client";
+'use client';
 
-import { paymentAction } from "@/action/payment";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
-import { useAddressStore } from "@/store/useAddressStore";
-import { useAuthStore } from "@/store/useAuthStore";
-import { CartItem, useCartStore } from "@/store/useCartStore";
-import { Coupon, useCouponStore } from "@/store/useCouponStore";
-import { useProductStore } from "@/store/useProductStore";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import PurchaseModal from "./purchaseModal";
+import { paymentAction } from '@/action/payment';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
+import { useAddressStore } from '@/store/useAddressStore';
+import { useAuthStore } from '@/store/useAuthStore';
+import { CartItem, useCartStore } from '@/store/useCartStore';
+import { Coupon, useCouponStore } from '@/store/useCouponStore';
+import { useProductStore } from '@/store/useProductStore';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import PurchaseModal from './purchaseModal';
 
 function CheckoutContent() {
-  const [paymentOpen, setPaymentOpen] = useState<boolean>(false)
+  const [paymentOpen, setPaymentOpen] = useState<boolean>(false);
   const { addresses, fetchAddresses } = useAddressStore();
-  const [selectedAddress, setSelectedAddress] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState('');
   const [showPaymentFlow, setShowPaymentFlow] = useState(false);
-  const [checkoutEmail, setCheckoutEmail] = useState("");
+  const [checkoutEmail, setCheckoutEmail] = useState('');
   const [cartItemsWithDetails, setCartItemsWithDetails] = useState<
     (CartItem & { product: any })[]
   >([]);
-  const [couponCode, setCouponCode] = useState("");
+  const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
-  const [couponAppliedError, setCouponAppliedError] = useState("");
+  const [couponAppliedError, setCouponAppliedError] = useState('');
   const { items, fetchCart, clearCart } = useCartStore();
   const { getProductById } = useProductStore();
   const { fetchCoupons, couponList } = useCouponStore();
@@ -43,7 +43,7 @@ function CheckoutContent() {
   }, [fetchAddresses, fetchCart, fetchCoupons]);
 
   useEffect(() => {
-    const findDefaultAddress = addresses.find((address) => address.isDefault);
+    const findDefaultAddress = addresses.find(address => address.isDefault);
 
     if (findDefaultAddress) {
       setSelectedAddress(findDefaultAddress.id);
@@ -53,7 +53,7 @@ function CheckoutContent() {
   useEffect(() => {
     const fetchIndividualProductDetails = async () => {
       const itemsWithDetails = await Promise.all(
-        items.map(async (item) => {
+        items.map(async item => {
           const product = await getProductById(item.productId);
           return { ...item, product };
         })
@@ -66,10 +66,20 @@ function CheckoutContent() {
   }, [items, getProductById]);
 
   function handleApplyCoupon() {
-    const getCurrentCoupon = couponList.find((c) => c.code === couponCode);
+    const getCurrentCoupon = couponList.find(c => c.code === couponCode);
 
     if (!getCurrentCoupon) {
-      setCouponAppliedError("Invalied Coupon code");
+      setCouponAppliedError('Invalied Coupon code');
+      setAppliedCoupon(null);
+      return;
+    }
+
+    const getSellerIds = cartItemsWithDetails.map(
+      item => item?.product?.sellerId
+    );
+
+    if (!getSellerIds.includes(getCurrentCoupon.sellerId)) {
+      setCouponAppliedError('Coupon Applicable Selected Seller Only');
       setAppliedCoupon(null);
       return;
     }
@@ -81,7 +91,7 @@ function CheckoutContent() {
       now > new Date(getCurrentCoupon.endDate)
     ) {
       setCouponAppliedError(
-        "Coupon is not valid in this time or expired coupon"
+        'Coupon is not valid in this time or expired coupon'
       );
       setAppliedCoupon(null);
       return;
@@ -89,17 +99,16 @@ function CheckoutContent() {
 
     if (getCurrentCoupon.usageCount >= getCurrentCoupon.usageLimit) {
       setCouponAppliedError(
-        "Coupon has reached its usage limit! Please try a diff coupon"
+        'Coupon has reached its usage limit! Please try a diff coupon'
       );
       setAppliedCoupon(null);
       return;
     }
 
     setAppliedCoupon(getCurrentCoupon);
-    setCouponAppliedError("");
+    setCouponAppliedError('');
   }
 
-  
   const subTotal = cartItemsWithDetails.reduce(
     (acc, item) => acc + (item.product?.price || 0) * item.quantity,
     0
@@ -126,21 +135,23 @@ function CheckoutContent() {
     userId: user?.id,
     name: user?.name,
     addressId: selectedAddress,
-        productIds : cartItemsWithDetails.map(item => item.productId),
-        items: cartItemsWithDetails.map((item) => ({
-          productId: item.productId,
-          productName: item.product.name,
-          productCategory: item.product.category,
-          quantity: item.quantity,
-          size: item.size,
-          color: item.color,
-          price: item.product.price,
-        })),
-        couponId: appliedCoupon?.id,
+    productIds: cartItemsWithDetails.map(item => item.productId),
+    items: cartItemsWithDetails.map(item => ({
+      productId: item.productId,
+      productName: item.product.name,
+      productCategory: item.product.category,
+      quantity: item.quantity,
+      size: item.size,
+      color: item.color,
+      price: item.product.price,
+      sellerId: item.product.sellerId,
+    })),
+    couponId: appliedCoupon?.id,
     totalPrice: totalPrice,
-        checkoutEmail: checkoutEmail
-      };
-      
+    checkoutEmail: checkoutEmail,
+  };
+
+  console.log(cartItemsWithDetails);
 
   return (
     <div className="min-h-screen bg-white py-8">
@@ -150,7 +161,7 @@ function CheckoutContent() {
             <Card className="p-6">
               <h2 className="text-xl font-semibold mb-4">Delivery</h2>
               <div className="space-y-4">
-                {addresses.map((address) => (
+                {addresses.map(address => (
                   <div key={address.id} className="flex items-start spce-x-2">
                     <Checkbox
                       id={address.id}
@@ -178,7 +189,7 @@ function CheckoutContent() {
                     </Label>
                   </div>
                 ))}
-                <Button onClick={() => router.push("/account")}>
+                <Button onClick={() => router.push('/account')}>
                   Add a new Address
                 </Button>
               </div>
@@ -190,11 +201,21 @@ function CheckoutContent() {
                   <p className="mb-3">
                     All transactions are secure and encrypted
                   </p>
-                  <Button className="w-full cursor-pointer" onClick={() => setPaymentOpen(true)}>Place Order</Button>
-                  
-                  {
-                    paymentOpen &&  <PurchaseModal isOpen={paymentOpen} closeModal={()=> setPaymentOpen(false)} productInfo={orderData} clearCart={clearCart} />
-                 }
+                  <Button
+                    className="w-full cursor-pointer"
+                    onClick={() => setPaymentOpen(true)}
+                  >
+                    Place Order
+                  </Button>
+
+                  {paymentOpen && (
+                    <PurchaseModal
+                      isOpen={paymentOpen}
+                      closeModal={() => setPaymentOpen(false)}
+                      productInfo={orderData}
+                      clearCart={clearCart}
+                    />
+                  )}
                 </div>
               ) : (
                 <div>
@@ -224,7 +245,7 @@ function CheckoutContent() {
             <Card className="p-6 sticky top-8">
               <h2>Order summary</h2>
               <div className="space-y-4">
-                {cartItemsWithDetails.map((item) => (
+                {cartItemsWithDetails.map(item => (
                   <div key={item.id} className="flex items-center space-x-4">
                     <div className="relative h-2- w-20 rounded-md overflow-hidden">
                       <img
@@ -251,7 +272,7 @@ function CheckoutContent() {
                 <div className="space-y-2">
                   <Input
                     placeholder="Enter a Discount code or Gift code"
-                    onChange={(e) => setCouponCode(e.target.value)}
+                    onChange={e => setCouponCode(e.target.value)}
                     value={couponCode}
                   />
                   <Button

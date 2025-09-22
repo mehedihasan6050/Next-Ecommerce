@@ -6,10 +6,11 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.route';
 import productRoutes from './routes/product.route';
 import couponRoutes from './routes/coupon.route';
-import settingsRoutes from './routes/settings.route'
-import cartRoutes from './routes/cart.route'
-import addressRoutes from './routes/address.route'
-import orderRoutes from './routes/order.route'
+import settingsRoutes from './routes/settings.route';
+import cartRoutes from './routes/cart.route';
+import addressRoutes from './routes/address.route';
+import orderRoutes from './routes/order.route';
+import dashboardRoutes from './routes/dashboard.route';
 
 //load all your enviroment variables
 dotenv.config();
@@ -29,15 +30,14 @@ app.use(cookieParser());
 
 export const prisma = new PrismaClient();
 
-
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/coupon', couponRoutes);
-app.use("/api/settings", settingsRoutes);
-app.use("/api/cart", cartRoutes);
-app.use("/api/address", addressRoutes);
-app.use("/api/order", orderRoutes);
-
+app.use('/api/settings', settingsRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/address', addressRoutes);
+app.use('/api/order', orderRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello from E-Commerce backend');

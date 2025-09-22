@@ -1,12 +1,10 @@
 import {
   LayoutDashboard,
   Package,
-  List,
+  Settings,
   LucideLogOut,
   ChevronRight,
   Menu,
-  Settings,
-  Puzzle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
@@ -24,14 +22,12 @@ const navigationItems = [
     label: 'Dashboard',
     href: '/admin',
   },
-  { icon: Package, label: 'Products', href: '/admin/products' },
-  { icon: Puzzle, label: 'Coupons', href: '/admin/coupons' },
-  { icon: List, label: 'Orders', href: '/admin/orders' },
+  { icon: Package, label: 'Access', href: '/admin/access' },
   { icon: Settings, label: 'Settings', href: '/admin/settings' },
   { icon: LucideLogOut, label: 'Logout', href: '' },
 ];
 
-function AdminSidebar({ isOpen, toggle }: SidebarProps) {
+function Sidebar({ isOpen, toggle }: SidebarProps) {
   const router = useRouter();
   const { logout } = useAuthStore();
   const pathname = usePathname();
@@ -75,10 +71,10 @@ function AdminSidebar({ isOpen, toggle }: SidebarProps) {
           {navigationItems.map(item => (
             <div
               key={item.label}
-              onClick={
+              onClick={() =>
                 item.label === 'Logout'
-                  ? handleLogout
-                  : () => router.push(item.href)
+                  ? handleLogout()
+                  : router.push(item.href)
               }
               className={cn(
                 'flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
@@ -99,4 +95,4 @@ function AdminSidebar({ isOpen, toggle }: SidebarProps) {
   );
 }
 
-export default AdminSidebar;
+export default Sidebar;

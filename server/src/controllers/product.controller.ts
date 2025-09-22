@@ -1,6 +1,6 @@
 import cloudinary from '../config/cloudinary';
 import { AuthenticatedRequest } from '../middlewares/auth.middleware';
-import { Response ,Request } from 'express';
+import { Response, Request } from 'express';
 import { prisma } from '../server';
 import fs from 'fs';
 import { Prisma } from '@prisma/client';
@@ -10,9 +10,6 @@ export const createProduct = async (
   res: Response
 ): Promise<void> => {
   try {
-
-    
-
     const {
       name,
       brand,
@@ -24,9 +21,8 @@ export const createProduct = async (
       price,
       stock,
       originalPrice,
+      sellerId,
     } = req.body;
-
-
 
     const files = req.files as Express.Multer.File[];
 
@@ -55,11 +51,35 @@ export const createProduct = async (
         soldCount: 0,
         rating: 0,
         originalPrice: parseFloat(originalPrice),
+        sellerId,
       },
     });
     //clean the uploaded files
     files.forEach(file => fs.unlinkSync(file.path));
     res.status(201).json(newlyCreatedProduct);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ success: false, message: 'Some error occured!' });
+  }
+};
+
+//fetch all products (seller side)
+export const fetchAllProductsForSeller = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      res.status(401).json({ message: 'unauthorized request' });
+      return;
+    }
+
+    const fetchAllProducts = await prisma.product.findMany({
+      where: { sellerId: userId },
+    });
+    res.status(200).json(fetchAllProducts);
   } catch (e) {
     console.error(e);
     res.status(500).json({ success: false, message: 'Some error occured!' });
@@ -177,25 +197,22 @@ export const getProductsForClient = async (
   res: Response
 ): Promise<void> => {
   try {
-
-
     if (req.query.query) {
-      const query = (req.query.query as string || "").trim();
+      const query = ((req.query.query as string) || '').trim();
       if (!query) {
-      res.status(200).json({ message: 'query not provided' });
-      return;
-    }
+        res.status(200).json({ message: 'query not provided' });
+        return;
+      }
 
-    const search = await prisma.product.findMany({
-      where: { name: { contains: query, mode: 'insensitive' } },
-      take: 10,
-      select: { id: true, name: true, price: true, images: true },
-    });
+      const search = await prisma.product.findMany({
+        where: { name: { contains: query, mode: 'insensitive' } },
+        take: 10,
+        select: { id: true, name: true, price: true, images: true },
+      });
 
       res.status(200).json(search);
-      return
- }
-
+      return;
+    }
 
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
@@ -220,7 +237,7 @@ export const getProductsForClient = async (
 
     const skip = (page - 1) * limit;
 
-    const where: Prisma.productWhereInput = {
+    const where: Prisma.ProductWhereInput = {
       AND: [
         categories.length > 0
           ? {
@@ -289,8 +306,3 @@ export const getProductsForClient = async (
     res.status(500).json({ success: false, message: 'Some error occured!' });
   }
 };
-
-
-
-
-

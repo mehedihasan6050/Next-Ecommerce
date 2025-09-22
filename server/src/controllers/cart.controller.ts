@@ -1,6 +1,6 @@
-import { Response } from "express";
-import { AuthenticatedRequest } from "../middlewares/auth.middleware";
-import { prisma } from "../server";
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../middlewares/auth.middleware';
+import { prisma } from '../server';
 
 export const addToCart = async (
   req: AuthenticatedRequest,
@@ -9,12 +9,12 @@ export const addToCart = async (
   try {
     const userId = req.user?.userId;
     const { productId, quantity, size, color } = req.body;
-    console.log(req.body)
+    console.log(req.body);
 
     if (!userId) {
       res.status(401).json({
         success: false,
-        message: "Unauthenticated user",
+        message: 'Unauthenticated user',
       });
 
       return;
@@ -74,7 +74,7 @@ export const addToCart = async (
   } catch (e) {
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: 'Some error occured!',
     });
   }
 };
@@ -89,7 +89,7 @@ export const getCart = async (
     if (!userId) {
       res.status(401).json({
         success: false,
-        message: "Unauthenticated user",
+        message: 'Unauthenticated user',
       });
 
       return;
@@ -105,7 +105,7 @@ export const getCart = async (
     if (!cart) {
       res.json({
         success: false,
-        messaage: "No Item found in cart",
+        messaage: 'No Item found in cart',
         data: [],
       });
 
@@ -113,7 +113,7 @@ export const getCart = async (
     }
 
     const cartItemsWithProducts = await Promise.all(
-      cart?.items.map(async (item) => {
+      cart?.items.map(async item => {
         const product = await prisma.product.findUnique({
           where: { id: item.productId },
           select: {
@@ -143,7 +143,7 @@ export const getCart = async (
   } catch (e) {
     res.status(500).json({
       success: false,
-      message: "Failed to fetch cart!",
+      message: 'Failed to fetch cart!',
     });
   }
 };
@@ -159,7 +159,7 @@ export const removeFromCart = async (
     if (!userId) {
       res.status(401).json({
         success: false,
-        message: "Unauthenticated user",
+        message: 'Unauthenticated user',
       });
 
       return;
@@ -174,12 +174,12 @@ export const removeFromCart = async (
 
     res.status(200).json({
       success: true,
-      message: "Item is removed from cart",
+      message: 'Item is removed from cart',
     });
   } catch (e) {
     res.status(500).json({
       success: false,
-      message: "Failed to remove from cart!",
+      message: 'Failed to remove from cart!',
     });
   }
 };
@@ -196,7 +196,7 @@ export const updateCartItemQuantity = async (
     if (!userId) {
       res.status(401).json({
         success: false,
-        message: "Unauthenticated user",
+        message: 'Unauthenticated user',
       });
 
       return;
@@ -237,7 +237,7 @@ export const updateCartItemQuantity = async (
   } catch (e) {
     res.status(500).json({
       success: false,
-      message: "Failed to update cart item quantity",
+      message: 'Failed to update cart item quantity',
     });
   }
 };
@@ -252,7 +252,7 @@ export const clearEntireCart = async (
     if (!userId) {
       res.status(401).json({
         success: false,
-        message: "Unauthenticated user",
+        message: 'Unauthenticated user',
       });
 
       return;
@@ -266,12 +266,12 @@ export const clearEntireCart = async (
 
     res.status(200).json({
       success: true,
-      message: "cart cleared successfully!",
+      message: 'cart cleared successfully!',
     });
   } catch (e) {
     res.status(500).json({
       success: false,
-      message: "Failed to clear cart!",
+      message: 'Failed to clear cart!',
     });
   }
 };

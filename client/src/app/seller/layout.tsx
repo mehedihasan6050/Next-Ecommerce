@@ -1,11 +1,11 @@
 'use client';
 
-import Sidebar from '@/components/admin/adminSidbar';
 import NavBar from '@/components/seller/navbar';
+import Sidebar from '@/components/seller/sidebar';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
-function AdminLayout({ children }: { children: React.ReactNode }) {
+function SellerLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
@@ -29,4 +29,4 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default AdminLayout;
+export default SellerLayout;

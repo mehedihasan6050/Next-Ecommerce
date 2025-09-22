@@ -48,6 +48,21 @@ export const authenticateJwt = (
     });
 };
 
+export const isSeller = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.user && req.user.role === 'SELLER') {
+    next();
+  } else {
+    res.status(403).json({
+      success: false,
+      error: 'Access denied! seller access required',
+    });
+  }
+};
+
 export const isAdmin = (
   req: AuthenticatedRequest,
   res: Response,

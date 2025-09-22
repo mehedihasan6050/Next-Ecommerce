@@ -7,7 +7,8 @@ export const createCoupon = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { code, discountPercent, startDate, endDate, usageLimit } = req.body;
+    const { code, discountPercent, startDate, endDate, usageLimit, sellerId } =
+      req.body;
 
     const newlyCreatedCoupon = await prisma.coupon.create({
       data: {
@@ -16,6 +17,7 @@ export const createCoupon = async (
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         usageLimit: parseInt(usageLimit),
+        sellerId,
         usageCount: 0,
       },
     });
@@ -30,6 +32,30 @@ export const createCoupon = async (
     res.status(500).json({
       success: false,
       message: 'Failed to created coupon',
+    });
+  }
+};
+
+export const fetchAllCouponSeller = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.user?.userId;
+    const fetchAllCouponsList = await prisma.coupon.findMany({
+      where: { sellerId: userId },
+      orderBy: { createdAt: 'asc' },
+    });
+    res.status(201).json({
+      success: true,
+      message: 'Coupon created successfully!',
+      couponList: fetchAllCouponsList,
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch coupon list',
     });
   }
 };

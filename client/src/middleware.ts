@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
 const publicRoutes = ['/auth/register', '/auth/login'];
-const superAdminRoutes = ['/admin', '/admin/:path*'];
+const sellerRoutes = ['/seller', '/seller/:path*'];
+const adminRoutes = ['/admin', '/admin/:path*'];
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken')?.value;
@@ -14,26 +15,47 @@ export async function middleware(request: NextRequest) {
         accessToken,
         new TextEncoder().encode(process.env.JWT_SECRET!)
       );
+
       const { role } = payload as { role: string };
 
       // ✅ already logged in → prevent visiting login/register
       if (publicRoutes.includes(pathname)) {
         return NextResponse.redirect(
-          new URL(role === 'ADMIN' ? '/admin' : '/', request.url)
+          new URL(
+            role === 'ADMIN' ? '/admin' : role === 'SELLER' ? '/seller' : '/',
+            request.url
+          )
         );
       }
 
-      // ✅ ADMIN entering home → redirect to /admin
-      if (role === 'ADMIN' && pathname === '/') {
-        return NextResponse.redirect(new URL('/admin', request.url));
+      // ✅ Role based access
+      if (role === 'USER') {
+        // user can't access admin or seller
+        if (
+          adminRoutes.some(route => pathname.startsWith('/admin')) ||
+          sellerRoutes.some(route => pathname.startsWith('/seller'))
+        ) {
+          return NextResponse.redirect(new URL('/', request.url));
+        }
       }
 
-      // ✅ Normal user trying to access /admin → send home
-      if (
-        role !== 'ADMIN' &&
-        superAdminRoutes.some(route => pathname.startsWith('/admin'))
-      ) {
-        return NextResponse.redirect(new URL('/', request.url));
+      if (role === 'SELLER') {
+        // seller can't access admin
+        if (adminRoutes.some(route => pathname.startsWith('/admin'))) {
+          return NextResponse.redirect(new URL('/seller', request.url));
+        }
+        // ✅ seller can access user routes (no block here)
+      }
+
+      if (role === 'ADMIN') {
+        // admin can't access seller or user routes
+        if (
+          sellerRoutes.some(route => pathname.startsWith('/seller')) ||
+          (!adminRoutes.some(route => pathname.startsWith('/admin')) &&
+            pathname !== '/admin')
+        ) {
+          return NextResponse.redirect(new URL('/admin', request.url));
+        }
       }
 
       return NextResponse.next();
@@ -66,6 +88,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Not logged in → only public routes allowed
   if (!publicRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }

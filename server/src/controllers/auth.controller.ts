@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthenticatedRequest } from '../middlewares/auth.middleware';
 
 function generateToken(userId: string, email: string, role: string) {
   const accessToken = jwt.sign(
@@ -106,6 +107,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         name: extractCurrentUser.name,
         email: extractCurrentUser.email,
         role: extractCurrentUser.role,
+        roleRequest: extractCurrentUser.roleRequest
       },
     });
   } catch (error) {
@@ -166,3 +168,79 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     message: 'User logged out successfully',
   });
 };
+
+
+export const handleRequest = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId
+  if (!userId) {
+    res.status(401).json({ message: 'Unauthorized request'})
+    return  
+  }
+
+   await prisma.user.update({
+      where: { id: userId },
+      data: { roleRequest: true },
+   });
+  
+  res.status(200).json({success: true,message: 'request successfully'})
+  } catch (error) {
+     console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to requested as a seller",
+    });
+  }
+}
+
+export const handleRoleChange = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const {id} = req.params
+  if (!id) {
+    res.status(401).json({ message: 'id not found'})
+    return  
+  }
+   await prisma.user.update({
+      where: { id: id },
+      data: { role: 'SELLER', roleRequest: false },
+   });
+    
+   
+  
+  res.status(200).json({success: true,message: 'request successfully'})
+  } catch (error) {
+     console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update role",
+    });
+  }
+}
+
+export const fetchRequstForSeller = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const requestedUser = await prisma.user.findMany({
+      where: { roleRequest: true },
+      select: {
+        id: true,
+        email: true,
+        roleRequest: true,
+        name: true,
+        role: true
+      }
+    });
+
+    res.status(200).json(requestedUser);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch requested user",
+    });
+  }
+
+
+ 
+}
+
+
