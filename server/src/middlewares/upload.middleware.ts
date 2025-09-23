@@ -1,33 +1,34 @@
 import multer from 'multer';
 import path from 'path';
+import { AuthenticatedRequest } from './auth.middleware';
 
-//configure stroage
-const stroage = multer.diskStorage({
+
+// Configure storage
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'public/');
   },
   filename: function (req, file, cb) {
-    cb(
-      null,
-      file.filename + '-' + Date.now() + path.extname(file.originalname)
-    );
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
   },
 });
 
+// File filter
 const fileFilter = (
-  req: any,
+  req: AuthenticatedRequest,
   file: Express.Multer.File,
   cb: multer.FileFilterCallback
 ) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb(new Error('Not an mage! Please upload only images.'));
+    cb(new Error('Not an image! Please upload only images.'));
   }
 };
 
+// Export multer upload
 export const upload = multer({
-  storage: stroage,
+  storage: storage,
   fileFilter: fileFilter,
-  limits: { fieldSize: 1024 * 1024 * 5 },
+  limits: { fileSize: 1024 * 1024 * 5 }, // 5MB
 });

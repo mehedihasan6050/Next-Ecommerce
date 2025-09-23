@@ -2,13 +2,17 @@ import { NextFunction, Request, Response } from 'express';
 import { jwtVerify } from 'jose';
 import { JwtPayload } from 'jsonwebtoken';
 
+
+
 export interface AuthenticatedRequest extends Request {
   user?: {
     userId: string;
     email: string;
     role: string;
   };
+  files?: any; // multer files, optional
 }
+
 
 export const authenticateJwt = (
   req: AuthenticatedRequest,
