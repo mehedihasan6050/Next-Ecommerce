@@ -48,69 +48,48 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
   }
 
   return (
-    <div
+
+     
+      <div
       className={cn(
-        'fixed left-0 top-0 z-40 h-screen bg-background transition-all duration-300',
-        isOpen ? 'w-64' : 'w-22'
+        'absolute lg:fixed left-0 top-0 z-40 min-h-screen bg-background transition-all duration-300 opacity-30 lg:opacity-100',
+        isOpen ? 'w-64 opacity-100' : 'w-22 '
       )}
-    >
-      <div className="p-6">
-        <div className="flex items-center gap-2 mb-8">
-          <h1
-            className={cn(
-              'text-xl font-semibold text-gray-900',
-              !isOpen && 'hidden'
-            )}
-          >
-            NextEcom
-          </h1>
-          <Button
-            variant={'ghost'}
-            size={'icon'}
-            className="ml-auto"
-            onClick={toggle}
-          >
-            {isOpen ? (
-              <Menu className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
-        <nav className="space-y-1">
-          {navigationItems.map(item => (
-            <div
-              key={item.label}
-              onClick={() => router.push(item.href)}
+      >
+        <div className="p-6">
+          <div className="flex items-center gap-2 mb-8">
+            <h1
               className={cn(
-                'flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                pathname === item.href
-                  ? 'bg-blue-500 text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
+                'text-xl font-semibold text-gray-900',
+                !isOpen && 'hidden'
               )}
             >
-              <item.icon className="w-5 h-5" />
-              <span className={cn('ml-3', !isOpen && 'hidden')}>
-                {item.label}
-              </span>
-            </div>
-          ))}
-        </nav>
-
-        <div className="mt-8">
-          <h3 className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-            PAGES
-          </h3>
+              NextEcom
+            </h1>
+            <Button
+              variant={'ghost'}
+              size={'icon'}
+              className="ml-auto"
+              onClick={toggle}
+            >
+              {isOpen ? (
+                <Menu className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
           <nav className="space-y-1">
-            {pageItems.map(item => (
+            {navigationItems.map(item => (
               <div
                 key={item.label}
-                onClick={
-                  item.label === 'Logout'
-                    ? handleLogout
-                    : () => router.push(item.href)
-                }
-                className="flex cursor-pointer items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                onClick={() => router.push(item.href)}
+                className={cn(
+                  'flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                  pathname === item.href
+                    ? 'bg-blue-500 text-white'
+                    : 'text-gray-600 hover:bg-gray-100'
+                )}
               >
                 <item.icon className="w-5 h-5" />
                 <span className={cn('ml-3', !isOpen && 'hidden')}>
@@ -119,9 +98,34 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
               </div>
             ))}
           </nav>
+  
+          <div className="mt-8">
+            <h3 className={`px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 ${isOpen ? 'block' : 'hidden'  }`}>
+              PAGES
+            </h3>
+            <nav className="space-y-1">
+              {pageItems.map(item => (
+                <div
+                  key={item.label}
+                  onClick={
+                    item.label === 'Logout'
+                      ? handleLogout
+                      : () => router.push(item.href)
+                  }
+                  className="flex cursor-pointer items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                >
+                  <item.icon className="w-5 h-5" />
+                  <span className={cn('ml-3', !isOpen && 'hidden')}>
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </nav>
+          </div>
         </div>
-      </div>
-    </div>
+        </div>
+  
+     
   );
 }
 

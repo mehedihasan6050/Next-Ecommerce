@@ -25,20 +25,20 @@ const DashBoard = () => {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-foreground mb-6">
+        <h1 className="lg:text-2xl text-base font-semibold text-foreground mb-0 lg:mb-6">
           Dashboard
         </h1>{' '}
         <div className="space-x-3">
           <Button
             onClick={() => setAddOpen(true)}
-            className="bg-blue-500 text-white cursor-pointer"
+            className="bg-blue-500 text-white cursor-pointer lg:text-base text-xs"
           >
             Add New Product
           </Button>
           {isAddOpen && <AddProductModal onClose={() => setAddOpen(false)} />}
           <Button
             onClick={() => setCreateOpen(true)}
-            className="cursor-pointer"
+            className="cursor-pointer lg:text-base text-xs"
           >
             Create Coupon
           </Button>

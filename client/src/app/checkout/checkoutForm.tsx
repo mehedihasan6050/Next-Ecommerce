@@ -109,24 +109,40 @@ const CheckoutForm = ({ closeModal, productInfo, clearCart }: CheckoutFormProps)
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
-  <div className="bg-white p-6 rounded-2xl shadow-md max-w-md mx-auto">
-    <div className="border p-3 rounded-lg mb-4">
-      <CardElement className="w-full" />
-    </div>
-    <div className="flex justify-between gap-3">
-      <Button
-        disabled={!stripe || !clientSecret || processing}
-        type="submit"
-        className="flex-1"
-      >
-        {processing ? "processing" : `Pay $${productInfo?.totalPrice}`}
-      </Button>
-      <Button variant="outline" onClick={closeModal} className="flex-1">
-        Cancel
-      </Button>
-    </div>
-  </div>
-</form>
+      <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-md max-w-md mx-auto">
+        <div className="border p-2 sm:p-3 rounded-lg mb-4">
+          <CardElement 
+            options={{
+              style: {
+                base: {
+                  fontSize: "16px",
+                  color: "#424770",
+                  "::placeholder": {
+                    color: "#aab7c4",
+                  },
+                },
+                invalid: {
+                  color: "#9e2146",
+                },
+              },
+            }}
+            className="w-full" 
+          />
+        </div>
+        <div className="flex justify-between gap-2 sm:gap-3">
+          <Button
+            disabled={!stripe || !clientSecret || processing}
+            type="submit"
+            className="flex-1 text-sm sm:text-base"
+          >
+            {processing ? "Processing..." : `Pay $${productInfo?.totalPrice}`}
+          </Button>
+          <Button variant="outline" onClick={closeModal} className="flex-1 text-sm sm:text-base">
+            Cancel
+          </Button>
+        </div>
+      </div>
+    </form>
 
   )
 }

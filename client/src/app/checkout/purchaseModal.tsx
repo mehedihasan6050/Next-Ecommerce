@@ -20,8 +20,8 @@ const PurchaseModal = ({ closeModal, isOpen, productInfo ,clearCart}: PurchaseMo
 
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"> 
-      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-3 sm:p-4 z-50"> 
+      <div className="bg-white rounded-lg w-full max-w-sm sm:max-w-md md:max-w-lg max-h-[90vh] overflow-y-auto">
         
          {/* CheckoutForm */}
                 <Elements stripe={stripePromise}>

@@ -59,10 +59,32 @@ function ProductDetailsContent({ id }: { id: string }) {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          <div className="lg:w-2/3 flex gap-4">
-            <div className="hidden lg:flex flex-col gap-2 w-24">
+      <div className="container mx-auto px-4 py-4 sm:py-8">
+        <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
+          <div className="w-full lg:w-2/3 flex flex-col md:flex-row gap-4">
+            {/* Mobile image thumbnails - horizontal scroll */}
+            <div className="flex md:hidden gap-2 overflow-x-auto pb-2 mb-2">
+              {product?.images.map((image: string, index: number) => (
+                <button
+                  onClick={() => setSelectedImage(index)}
+                  key={index}
+                  className={`${
+                    selectedImage === index
+                      ? 'border-black'
+                      : 'border-transparent'
+                  } border-2 flex-shrink-0`}
+                >
+                  <img
+                    src={image}
+                    alt={`Product-${index + 1}`}
+                    className="w-16 h-16 object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+            
+            {/* Desktop vertical thumbnails */}
+            <div className="hidden md:flex flex-col gap-2 w-20 md:w-24">
               {product?.images.map((image: string, index: number) => (
                 <button
                   onClick={() => setSelectedImage(index)}
@@ -81,30 +103,33 @@ function ProductDetailsContent({ id }: { id: string }) {
                 </button>
               ))}
             </div>
-            <div className="flex-1 relative w-[300px]">
+            
+            {/* Main product image */}
+            <div className="flex-1 relative">
               <img
                 src={product.images[selectedImage]}
                 alt={product.name}
-                className="w-full h-[500px] object-top object-cover"
+                className="w-full max-w-full h-auto sm:h-[400px] md:h-[450px] lg:h-[500px] object-contain sm:object-cover object-top mx-auto"
               />
             </div>
           </div>
-          <div className="lg:w-1/3 space-y-6">
+          
+          <div className="w-full lg:w-1/3 space-y-4 sm:space-y-6 mt-4 lg:mt-0">
             <div>
-              <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold mb-2">{product.name}</h1>
               <div>
-                <span className="text-2xl font-semibold">
+                <span className="text-xl sm:text-2xl font-semibold">
                   ${product.price.toFixed(2)}
                 </span>
               </div>
             </div>
             <div>
               <h3 className="font-medium mb-2">Color</h3>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {product.colors.map((color: string, index: number) => (
                   <button
                     key={index}
-                    className={`w-12 h-12 rounded-full border-2 ${
+                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 ${
                       selectedColor === index
                         ? 'border-black'
                         : 'border-gray-300'
@@ -117,11 +142,11 @@ function ProductDetailsContent({ id }: { id: string }) {
             </div>
             <div>
               <h3 className="font-medium mb-2">Size</h3>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 {product.sizes.map((size: string, index: string) => (
                   <Button
                     key={index}
-                    className={`w-12 h-12`}
+                    className={`w-10 h-10 sm:w-12 sm:h-12 text-sm sm:text-base`}
                     variant={selectedSize === size ? 'default' : 'outline'}
                     onClick={() => setSelectedSize(size)}
                   >
@@ -136,6 +161,7 @@ function ProductDetailsContent({ id }: { id: string }) {
                 <Button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   variant="outline"
+                  className="h-10 w-10 sm:h-12 sm:w-12"
                 >
                   -
                 </Button>
@@ -143,16 +169,17 @@ function ProductDetailsContent({ id }: { id: string }) {
                 <Button
                   onClick={() => setQuantity(quantity + 1)}
                   variant="outline"
+                  className="h-10 w-10 sm:h-12 sm:w-12"
                 >
                   +
                 </Button>
               </div>
             </div>
-            <div>
+            <div className="pt-2">
               <Button
                 onClick={handleAddToCart}
                 className={
-                  'w-full cursor-pointer bg-black text-white hover:bg-gray-800'
+                  'w-full cursor-pointer bg-black text-white hover:bg-gray-800 h-12 sm:h-14 text-sm sm:text-base'
                 }
               >
                 ADD TO CART
@@ -160,24 +187,24 @@ function ProductDetailsContent({ id }: { id: string }) {
             </div>
           </div>
         </div>
-        <div className="mt-16">
+        <div className="mt-8 sm:mt-12 lg:mt-16">
           <Tabs defaultValue="details">
-            <TabsList className="w-full justify-start border-b">
-              <TabsTrigger value="details">PRODUCT DESCRIPTION</TabsTrigger>
-              <TabsTrigger value="reviews">REVIEWS</TabsTrigger>
-              <TabsTrigger value="shipping">
+            <TabsList className="w-full justify-start border-b overflow-x-auto">
+              <TabsTrigger className="text-xs sm:text-sm whitespace-nowrap" value="details">PRODUCT DESCRIPTION</TabsTrigger>
+              <TabsTrigger className="text-xs sm:text-sm whitespace-nowrap" value="reviews">REVIEWS</TabsTrigger>
+              <TabsTrigger className="text-xs sm:text-sm whitespace-nowrap" value="shipping">
                 SHIPPING & RETURNS INFO
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="details" className="mt-5">
-              <p className="text-gray-700 mb-4">{product.description}</p>
+            <TabsContent value="details" className="mt-4 sm:mt-5">
+              <p className="text-sm sm:text-base text-gray-700 mb-4">{product.description}</p>
             </TabsContent>
-            <TabsContent value="reviews" className="mt-5">
-              Reviews
+            <TabsContent value="reviews" className="mt-4 sm:mt-5">
+              <p className="text-sm sm:text-base">Reviews</p>
             </TabsContent>
             <TabsContent value="shipping">
-              <p className="text-gray-700 mb-4">
-                Shipping and return information goes here.Please read the info
+              <p className="text-sm sm:text-base text-gray-700 mb-4">
+                Shipping and return information goes here. Please read the info
                 before proceeding.
               </p>
             </TabsContent>

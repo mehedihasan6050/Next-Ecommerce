@@ -40,8 +40,8 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
   return (
     <div
       className={cn(
-        'fixed left-0 top-0 z-40 h-screen bg-background transition-all duration-300',
-        isOpen ? 'w-64' : 'w-22'
+        'absolute lg:fixed left-0 top-0 z-40 h-screen bg-background transition-all opacity-30 lg:opacity-100 duration-300',
+        isOpen ? 'w-64 opacity-100' : 'w-22'
       )}
     >
       <div className="p-6">

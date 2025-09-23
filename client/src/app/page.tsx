@@ -121,7 +121,7 @@ if (filterType === 'categories' && value === 'All') {
           {/* Categories Section */}
           <section>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800">
+              <h2 className="md:text-2xl text-base font-semibold text-gray-800">
                 Shop From{' '}
                 <span className="border-b-2 border-black pb-1">
                   Top Categories

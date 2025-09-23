@@ -189,7 +189,7 @@ function UserAccountPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         <div className="mb-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold">MY ACCOUNT</h1>
+          <h1 className="md:text-3xl text-base font-bold">MY ACCOUNT</h1>
           <Button disabled={user?.roleRequest} onClick={handleRequest} className='text-xl font-bold cursor-pointer'>{user?.roleRequest? "You've Already Requested" : 'Request For Seller'}</Button>
      
         </div>

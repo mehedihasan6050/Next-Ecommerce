@@ -1,6 +1,6 @@
 'use client';
 
-import Sidebar from '@/components/admin/adminSidbar';
+import Sidebar from '@/components/admin/adminSidebar';
 import NavBar from '@/components/seller/navbar';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -18,7 +18,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
       <div
         className={cn(
           'transition-all duration-300',
-          isSidebarOpen ? 'ml-64' : 'ml-16',
+          isSidebarOpen ? 'lg:ml-64' : 'lg:ml-16',
           'min-h-screen'
         )}
       >

@@ -208,7 +208,7 @@ function ProductListingPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
           <h2 className="text-2xl font-semibold">All Products</h2>
           <div className="flex items-center gap-4">
             {/* Mobile filter render */}
@@ -219,7 +219,7 @@ function ProductListingPage() {
                   Filters
                 </Button>
               </DialogTrigger>
-              <DialogContent className="w-[90vw] max-h-[600px] overflow-auto max-w-[400px]">
+              <DialogContent className="w-[90vw] max-h-[80vh] overflow-auto max-w-[400px]">
                 <DialogHeader>
                   <DialogTitle>Filters</DialogTitle>
                 </DialogHeader>
@@ -230,14 +230,15 @@ function ProductListingPage() {
               value={`${sortBy}-${sortOrder}`}
               onValueChange={value => handleSortChange(value)}
               name="sort"
+              className="w-full sm:w-auto"
             >
               <SelectTrigger className="mt-1.5">
-                <SelectValue placeholder="Select Brand" />
+                <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="createdAt-asc">Sort by: Featured</SelectItem>
                 <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                <SelectItem value="price-desc">Price : High to Low</SelectItem>
+                <SelectItem value="price-desc">Price: High to Low</SelectItem>
                 <SelectItem value="createdAt-desc">
                   Sort by: Newest First
                 </SelectItem>
@@ -245,25 +246,27 @@ function ProductListingPage() {
             </Select>
           </div>
         </div>
-        <div className="flex gap-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           <div className="hidden lg:block w-64 flex-shrink-0">
             <FilterSection />
           </div>
           {/* product grid */}
           <div className="flex-1">
             {isLoading ? (
-              <div>Loading...</div>
+              <div className="flex justify-center items-center h-40">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              </div>
             ) : error ? (
-              <div>Error: {error}</div>
+              <div className="text-red-500 p-4 text-center">{error}</div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                 {products.map(productItem => (
                   <div
                     onClick={() => router.push(`/listing/${productItem.id}`)}
                     key={productItem.id}
-                    className="group"
+                    className="group border rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-300"
                   >
-                    <div className="relative h-80 mb-4 bg-gray-100 overflow-hidden">
+                    <div className="relative h-60 sm:h-72 bg-gray-100 overflow-hidden">
                       <img
                         src={productItem.images[0]}
                         alt={productItem.name}
@@ -275,19 +278,21 @@ function ProductListingPage() {
                         </Button>
                       </div>
                     </div>
-                    <h3 className="font-bold">{productItem.name}</h3>
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="font-semibold">
-                        ${productItem.price.toFixed(2)}
-                      </span>
-                      <div className="flex gap-1">
-                        {productItem.colors.map((colorItem, index) => (
-                          <div
-                            key={index}
-                            className={`w-4 h-4 rounded-full border `}
-                            style={{ backgroundColor: colorItem }}
-                          />
-                        ))}
+                    <div className="p-4">
+                      <h3 className="font-bold text-sm sm:text-base line-clamp-2">{productItem.name}</h3>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="font-semibold">
+                          ${productItem.price.toFixed(2)}
+                        </span>
+                        <div className="flex gap-1">
+                          {productItem.colors.map((colorItem, index) => (
+                            <div
+                              key={index}
+                              className={`w-4 h-4 rounded-full border `}
+                              style={{ backgroundColor: colorItem }}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -296,7 +301,7 @@ function ProductListingPage() {
             )}
 
             {/* pagination */}
-            <div className="mt-10 items-center flex justify-center gap-2">
+            <div className="mt-10 items-center flex flex-wrap justify-center gap-2">
               <Button
                 disabled={currentPage === 1}
                 variant={'outline'}
@@ -309,7 +314,7 @@ function ProductListingPage() {
                 <Button
                   key={page}
                   variant={currentPage === page ? 'default' : 'outline'}
-                  className="w-10"
+                  className="w-8 sm:w-10 h-8 sm:h-10 p-0"
                   onClick={() => handlePageChange(page)}
                 >
                   {page}

@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Menu, User, ShoppingCart } from 'lucide-react';
+import { Search, Menu, User, ShoppingCart, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -19,6 +19,8 @@ import { useEffect, useState } from 'react';
 
 export function HomeNavBar() {
   const [query, setQuery] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const { user, logout } = useAuthStore();
   const router = useRouter();
@@ -28,6 +30,7 @@ export function HomeNavBar() {
   const handleLogout = async () => {
     await logout();
     router.push('/auth/login');
+    setMobileMenuOpen(false);
   };
 
   const handleSearch = async (value: string) => {
@@ -46,6 +49,7 @@ export function HomeNavBar() {
     setSearch([]);
     setQuery('');
     router.push('/listing');
+    setMobileSearchOpen(false);
   };
 
   return (
@@ -53,14 +57,20 @@ export function HomeNavBar() {
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Left section - Hamburger menu and brand */}
         <div className="flex items-center gap-4">
+          <button 
+            className="md:hidden" 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
           <Link href="/" className="text-2xl font-bold">
             NextEcom
           </Link>
         </div>
 
-        {/* Center section - Search bar */}
-        <div className="flex-1 max-w-2xl mx-8 relative">
-          <div>
+        {/* Center section - Search bar (hidden on mobile) */}
+        <div className="hidden md:flex flex-1 max-w-2xl mx-8 relative">
+          <div className="w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               type="search"
@@ -76,6 +86,11 @@ export function HomeNavBar() {
                 <div
                   key={item.id}
                   className="flex items-center gap-3 p-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => {
+                    router.push(`/listing/${item.id}`);
+                    setSearch([]);
+                    setQuery('');
+                  }}
                 >
                   <img
                     src={item.images[0]}
@@ -102,8 +117,11 @@ export function HomeNavBar() {
           )}
         </div>
 
+       
+
         {/* Right section - Menu, Sign In, Cart */}
-        <div className="flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-6">
+          
           <div>
             <Link href="/listing" className="text-sm font-medium">
               Products
@@ -161,7 +179,152 @@ export function HomeNavBar() {
             <span className="text-sm font-medium">Cart ({items.length})</span>
           </Link>
         </div>
+       <div className="flex items-center gap-4">
+         {/* Mobile search icon */}
+         <div className="md:hidden flex items-center">
+          <button 
+            onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+            className="p-2"
+          >
+            <Search className="h-5 w-5" />
+          </button>
+        </div>
+{/* Mobile cart icon */} 
+        <div className="md:hidden">
+          <Link
+            href="/cart"
+            className="relative p-2"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {items.length > 0 && (
+              <span className="absolute bottom-11 -right-4 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {items.length}
+              </span>
+            )}
+          </Link>
+        </div>
+       </div>
+        
+        
       </div>
+
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-50 bg-white pt-16">
+          
+          <div className="flex relative flex-col p-4 space-y-6">
+          <button 
+              className="absolute right-2 -top-4 z-10"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <X className="h-10 w-10" />
+            </button>
+            <Link 
+              href="/listing" 
+              className="text-lg font-medium py-2 border-b"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Products
+            </Link>
+            
+            {user ? (
+              <>
+                <Link 
+                  href="/account" 
+                  className="text-lg font-medium py-2 border-b"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  My Account
+                </Link>
+                {user?.role === 'SELLER' && (
+                  <Link 
+                    href="/seller" 
+                    className="text-lg font-medium py-2 border-b"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Seller Dashboard
+                  </Link>
+                )}
+                <button 
+                  onClick={handleLogout} 
+                  className="text-lg font-medium py-2 border-b text-left"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link 
+                href="/auth/login" 
+                className="text-lg font-medium py-2 border-b"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Sign Up/Sign In
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Mobile search overlay */}
+      {mobileSearchOpen && (
+        <div className="md:hidden fixed inset-0 z-50 bg-white pt-16 px-4">
+          <div className="relative">
+            <button 
+              className="absolute right-2 top-2 z-10"
+              onClick={() => setMobileSearchOpen(false)}
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="pt-8">
+              
+              <Input
+                type="search"
+                value={query}
+                placeholder="Search products..."
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 border-gray-200 rounded-lg text-sm"
+                onChange={e => setQuery(e.target.value)}
+                autoFocus
+              />
+            </div>
+            {search?.length > 0 && (
+              <div className="bg-white w-full mt-2 rounded max-h-[calc(100vh-150px)] overflow-y-auto">
+                {search.map(item => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer border-b"
+                    onClick={() => {
+                      router.push(`/listing/${item.id}`);
+                      setSearch([]);
+                      setQuery('');
+                      setMobileSearchOpen(false);
+                    }}
+                  >
+                    <img
+                      src={item.images[0]}
+                      alt={item.name}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">{item.name}</span>
+                      <span className="text-red-500 font-bold">
+                        ${item.price}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+                <div className="text-center py-3">
+                  <button
+                    onClick={handleNavigate}
+                    className="text-blue-600 cursor-pointer hover:underline"
+                  >
+                    See all results
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

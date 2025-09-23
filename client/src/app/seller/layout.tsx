@@ -10,16 +10,18 @@ function SellerLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Sidebar */}
       <Sidebar
         isOpen={isSidebarOpen}
         toggle={() => setIsSidebarOpen(!isSidebarOpen)}
       />
 
+      {/* Content Area */}
       <div
         className={cn(
-          'transition-all duration-300',
-          isSidebarOpen ? 'ml-64' : 'ml-16',
-          'min-h-screen'
+          'transition-all duration-300 min-h-screen',
+          // শুধু lg breakpoint থেকে margin-left ব্যবহার করবো
+          isSidebarOpen ? 'lg:ml-64' : 'lg:ml-16'
         )}
       >
         <NavBar />
