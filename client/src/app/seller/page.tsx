@@ -20,7 +20,7 @@ const DashBoard = () => {
     dashBoardStatistics();
   }, []);
 
-  console.log(statisticsSeller);
+
 
   return (
     <div className="p-6">

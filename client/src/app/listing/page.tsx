@@ -74,7 +74,7 @@ function ProductListingPage() {
   ]);
 
   const handleSortChange = (value: string) => {
-    console.log(value);
+
     const [newSortBy, newSortOrder] = value.split('-');
     setSortBy(newSortBy);
     setSortOrder(newSortOrder as 'asc' | 'desc');
@@ -203,7 +203,7 @@ function ProductListingPage() {
     );
   };
 
-  console.log(totalPages, totalProducts, products);
+
 
   return (
     <div className="min-h-screen bg-white">

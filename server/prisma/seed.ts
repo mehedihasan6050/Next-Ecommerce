@@ -26,7 +26,6 @@ async function main() {
     },
   });
 
-  console.log('admin created successfully', superAdminUser.email);
 }
 
 main()

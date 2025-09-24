@@ -9,7 +9,7 @@ export const addToCart = async (
   try {
     const userId = req.user?.userId;
     const { productId, quantity, size, color } = req.body;
-    console.log(req.body);
+   
 
     if (!userId) {
       res.status(401).json({

@@ -121,7 +121,7 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: false });
           return true
         } catch (error) {
-           console.log(error)
+           console.error(error)
            return false
          
         }
@@ -133,7 +133,7 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: false });
           return true
         } catch (error) {
-          console.log(error)
+          console.error(error)
            return false
          
         }
@@ -145,7 +145,7 @@ export const useAuthStore = create<AuthStore>()(
         set({requestUser: res.data, isLoading: false });
          
         } catch (error) {
-          console.log(error)
+          console.error(error)
           set({error: 'somthng went wrong'}) 
         }
       }

@@ -53,7 +53,7 @@ function ProductDetailsContent({ id }: { id: string }) {
     }
   };
 
-  console.log(id, product);
+
 
   if (!product || isLoading) return <ProductDetailsSkeleton />;
 

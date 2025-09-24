@@ -23,7 +23,7 @@ const CheckoutForm = ({ closeModal, productInfo, clearCart }: CheckoutFormProps)
   useEffect(() => {
     getPaymentIntent()
   }, [productInfo])
-  console.log(clientSecret)
+
   const getPaymentIntent = async () => {
     try {
       const { data } = await axios.post( `${API_ROUTES.ORDER}/create-payment-intent`, {
@@ -32,7 +32,7 @@ const CheckoutForm = ({ closeModal, productInfo, clearCart }: CheckoutFormProps)
       },{ withCredentials: true })
       setClientSecret(data.clientSecret)
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
@@ -67,7 +67,7 @@ const CheckoutForm = ({ closeModal, productInfo, clearCart }: CheckoutFormProps)
     })
     if (error) {
       setProcessing(false)
-      return console.log('[error]', error)
+      return console.error('[error]', error)
     } else {
       console.log('[PaymentMethod]', paymentMethod)
     }
@@ -96,10 +96,9 @@ const CheckoutForm = ({ closeModal, productInfo, clearCart }: CheckoutFormProps)
       );
         toast.success('Order Successful!')
         router.push('/account')
-        console.log(paymentIntent)
         clearCart()
       } catch (err) {
-        console.log(err)
+        console.error(err)
       } finally {
         setProcessing(false)
         closeModal()

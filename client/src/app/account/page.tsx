@@ -77,7 +77,7 @@ function UserAccountPage() {
       setShowAddresses(false);
       setFormData(initialAddressFormState);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -119,7 +119,7 @@ function UserAccountPage() {
             fetchAddresses();
           })
           .catch(e => {
-            console.log(e);
+            console.error(e);
           });
       }
     });
@@ -181,7 +181,7 @@ function UserAccountPage() {
     }
   };
 
-  console.log(user)
+
 
   if (isLoading) return null;
 

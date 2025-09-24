@@ -151,7 +151,7 @@ function CheckoutContent() {
     checkoutEmail: checkoutEmail,
   };
 
-  console.log(cartItemsWithDetails);
+
 
   return (
     <div className="min-h-screen bg-white py-4 sm:py-8">

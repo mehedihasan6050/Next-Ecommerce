@@ -25,7 +25,7 @@ type OrderStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED';
 function ManageOrdersPage() {
   const { getAllOrders, sellerOrders, updateOrderStatus } = useOrderStore();
 
-  console.log(sellerOrders);
+  
 
   useEffect(() => {
     getAllOrders();

@@ -35,7 +35,7 @@ function SettingsPage() {
     }
   }, [fetchAllProductsForAdmin, fetchFeaturedProducts, fetchBanners]);
 
-  console.log(products, 'products');
+  
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
