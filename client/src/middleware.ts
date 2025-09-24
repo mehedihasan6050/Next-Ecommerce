@@ -9,91 +9,59 @@ export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken')?.value;
   const { pathname } = request.nextUrl;
 
-  if (accessToken) {
-    try {
-      const { payload } = await jwtVerify(
-        accessToken,
-        new TextEncoder().encode(process.env.JWT_SECRET!)
-      );
+  // Not logged in → only allow public routes
+  if (!accessToken) {
+    if (!publicRoutes.includes(pathname)) {
+      return NextResponse.redirect(new URL('/auth/login', request.url));
+    }
+    return NextResponse.next();
+  }
 
-      const { role } = payload as { role: string };
+  try {
+    const { payload } = await jwtVerify(
+      accessToken,
+      new TextEncoder().encode(process.env.JWT_SECRET!)
+    );
 
-      // ✅ already logged in → prevent visiting login/register
-      if (publicRoutes.includes(pathname)) {
-        return NextResponse.redirect(
-          new URL(
-            role === 'ADMIN' ? '/admin' : role === 'SELLER' ? '/seller' : '/',
-            request.url
-          )
-        );
-      }
+    const { role } = payload as { role: string };
 
-      // ✅ Role based access
-      if (role === 'USER') {
-        // user can't access admin or seller
-        if (
-          adminRoutes.some(route => pathname.startsWith('/admin')) ||
-          sellerRoutes.some(route => pathname.startsWith('/seller'))
-        ) {
-          return NextResponse.redirect(new URL('/', request.url));
-        }
-      }
-
-      if (role === 'SELLER') {
-        // seller can't access admin
-        if (adminRoutes.some(route => pathname.startsWith('/admin'))) {
-          return NextResponse.redirect(new URL('/seller', request.url));
-        }
-        // ✅ seller can access user routes (no block here)
-      }
-
-      if (role === 'ADMIN') {
-        // admin can't access seller or user routes
-        if (
-          sellerRoutes.some(route => pathname.startsWith('/seller')) ||
-          (!adminRoutes.some(route => pathname.startsWith('/admin')) &&
-            pathname !== '/admin')
-        ) {
-          return NextResponse.redirect(new URL('/admin', request.url));
-        }
-      }
-
-      return NextResponse.next();
-    } catch (e) {
-      console.error('Token verification failed', e);
-
-      const refreshResponse = await fetch(
-        'http://localhost:3000/api/auth/refresh-token',
-        {
-          method: 'POST',
-          credentials: 'include',
-        }
-      );
-
-      if (refreshResponse.ok) {
-        const response = NextResponse.next();
-        response.cookies.set(
-          'accessToken',
-          refreshResponse.headers.get('Set-Cookie') || ''
-        );
-        return response;
-      } else {
-        const response = NextResponse.redirect(
-          new URL('/auth/login', request.url)
-        );
-        response.cookies.delete('accessToken');
-        response.cookies.delete('refreshToken');
-        return response;
+    // ✅ USER restrictions
+    if (role === 'USER') {
+      if (
+        adminRoutes.some(route => pathname.startsWith('/admin')) ||
+        sellerRoutes.some(route => pathname.startsWith('/seller'))
+      ) {
+        return NextResponse.redirect(new URL('/', request.url));
       }
     }
-  }
 
-  // Not logged in → only public routes allowed
-  if (!publicRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
-  }
+    // ✅ SELLER restrictions
+    if (role === 'SELLER') {
+      if (adminRoutes.some(route => pathname.startsWith('/admin'))) {
+        return NextResponse.redirect(new URL('/seller', request.url));
+      }
+    }
 
-  return NextResponse.next();
+    // ✅ ADMIN restrictions
+    if (role === 'ADMIN') {
+      if (
+        sellerRoutes.some(route => pathname.startsWith('/seller')) ||
+        (!adminRoutes.some(route => pathname.startsWith('/admin')) &&
+          pathname !== '/admin')
+      ) {
+        return NextResponse.redirect(new URL('/admin', request.url));
+      }
+    }
+
+    return NextResponse.next();
+  } catch (e) {
+    console.error('Token verification failed', e);
+
+    const response = NextResponse.redirect(new URL('/auth/login', request.url));
+    response.cookies.delete('accessToken');
+    response.cookies.delete('refreshToken');
+    return response;
+  }
 }
 
 export const config = {
