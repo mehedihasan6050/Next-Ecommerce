@@ -10,8 +10,8 @@ export interface AuthenticatedRequest extends Request {
     email: string;
     role: string;
   };
-  files?: any; // multer files, optional
 }
+
 
 
 export const authenticateJwt = (
