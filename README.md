@@ -231,12 +231,9 @@ PORT=3001
 # API
 NEXT_PUBLIC_API_URL="http://localhost:3001"
 
+#ARCJET
+ARCJET_KEY="your-arcjet-key"
+
 # Stripe
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="your-stripe-publishable-key"
-
-# Cloudinary
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your-cloudinary-cloud-name"
-```
-
-
 ```
