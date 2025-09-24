@@ -44,7 +44,7 @@ export const paymentIntent = async (
     });
     res.send({ clientSecret: client_secret });
   } catch (e) {
-    console.log(e, 'payment faild');
+   
 
     res.status(500).json({
       success: false,
@@ -62,7 +62,7 @@ export const createOrder = async (
     const { items, addressId, couponId, totalPrice, paymentId } = req.body;
     const userId = req.user?.userId;
 
-    console.log(items, 'itemsitemsitems');
+
 
     if (!userId) {
       res.status(401).json({
@@ -136,7 +136,7 @@ export const createOrder = async (
 
     res.status(201).json(order);
   } catch (e) {
-    console.log(e, 'createFinalOrder');
+   
 
     res.status(500).json({
       success: false,

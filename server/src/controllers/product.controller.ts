@@ -145,7 +145,7 @@ export const updateProduct = async (
       rating,
     } = req.body;
 
-    console.log(req.body, 'req.body');
+  
 
     //homework -> you can also implement image update func
 
@@ -287,12 +287,6 @@ export const getProductsForClient = async (
       prisma.product.count({ where }),
     ]);
 
-    console.log(
-      Math.ceil(total / limit),
-      total,
-      limit,
-      'Math.ceil(total / limit)'
-    );
 
     res.status(200).json({
       success: true,

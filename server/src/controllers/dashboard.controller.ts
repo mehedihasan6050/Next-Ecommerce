@@ -6,7 +6,7 @@ export const dashboardStatics = async (
   req: AuthenticatedRequest,
   res: Response
 ) => {
-  console.log('🔥 API reached, user:', req.user); // প্রথমেই log করো
+  
   try {
     // logic here
     const userId = req.user?.userId;
@@ -58,12 +58,7 @@ export const dashboardStatics = async (
       },
     });
 
-    console.log({
-      totalSales,
-      totalCustomers,
-      totalOrders,
-      pendingOrders,
-    });
+
 
     res.status(200).json({
       totalSales,
@@ -80,7 +75,7 @@ export const dashboardStatsForAdmin = async (
   req: AuthenticatedRequest,
   res: Response
 ) => {
-  console.log('🔥 Admin API reached, user:', req.user);
+
 
   try {
     const userId = req.user?.userId;
@@ -115,12 +110,7 @@ export const dashboardStatsForAdmin = async (
       },
     });
 
-    console.log({
-      totalOrders,
-      completedOrders,
-      totalSales,
-      totalCustomers,
-    });
+
 
     res.status(200).json({
       totalOrders,
