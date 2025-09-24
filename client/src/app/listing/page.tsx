@@ -229,10 +229,8 @@ function ProductListingPage() {
             <Select
               value={`${sortBy}-${sortOrder}`}
               onValueChange={value => handleSortChange(value)}
-              name="sort"
-              className="w-full sm:w-auto"
             >
-              <SelectTrigger className="mt-1.5">
+              <SelectTrigger className="w-full sm:w-auto mt-1.5">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>

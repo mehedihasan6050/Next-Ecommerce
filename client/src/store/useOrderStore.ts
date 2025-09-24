@@ -76,24 +76,6 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
         { status },
         { withCredentials: true }
       );
-      set(state => ({
-        currentOrder:
-          state.currentOrder && state.currentOrder.id === orderId
-            ? {
-                ...state.currentOrder,
-                status,
-              }
-            : state.currentOrder,
-        isLoading: false,
-        adminOrders: state.adminOrders.map(item =>
-          item.id === orderId
-            ? {
-                ...item,
-                status,
-              }
-            : item
-        ),
-      }));
       return true;
     } catch (error) {
       set({ error: 'Failed to capture paypal order', isLoading: false });
@@ -135,7 +117,7 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
         `${API_ROUTES.ORDER}/get-single-order/${orderId}`,
         { withCredentials: true }
       );
-      set({ isLoading: false, currentOrder: response.data });
+      set({ isLoading: false });
       return response.data;
     } catch (error) {
       set({ error: 'Failed to fetch all orders for admin', isLoading: false });
