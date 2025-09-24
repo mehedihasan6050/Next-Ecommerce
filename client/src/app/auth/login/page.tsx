@@ -161,7 +161,7 @@ function LoginPage() {
 
             {/* Sign Up Link */}
             <div className="text-center mt-6 sm:mt-8">
-              <span className="text-gray-500 text-sm sm:text-base">Don't have an account? </span>
+              <span className="text-gray-500 text-sm sm:text-base">Don&apos;t have an account? </span>
               <Link
                 href="/auth/register"
                 className="text-orange-500 hover:text-orange-600 font-semibold text-sm sm:text-base"
