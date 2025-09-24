@@ -8,60 +8,84 @@ const adminRoutes = ['/admin', '/admin/:path*'];
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken')?.value;
   const { pathname } = request.nextUrl;
+console.log(accessToken)
+  if (accessToken) {
+    try {
+      const { payload } = await jwtVerify(
+        accessToken,
+        new TextEncoder().encode(process.env.JWT_SECRET!)
+      );
 
-  // Not logged in → only allow public routes
-  if (!accessToken) {
-    if (!publicRoutes.includes(pathname)) {
-      return NextResponse.redirect(new URL('/auth/login', request.url));
+      const { role } = payload as { role: string };
+
+
+
+      // ✅ Role based access
+      if (role === 'USER') {
+        // user can't access admin or seller
+        if (
+          adminRoutes.some(route => pathname.startsWith('/admin')) ||
+          sellerRoutes.some(route => pathname.startsWith('/seller'))
+        ) {
+          return NextResponse.redirect(new URL('/', request.url));
+        }
+      }
+
+      if (role === 'SELLER') {
+        // seller can't access admin
+        if (adminRoutes.some(route => pathname.startsWith('/admin'))) {
+          return NextResponse.redirect(new URL('/seller', request.url));
+        }
+        // ✅ seller can access user routes (no block here)
+      }
+
+      if (role === 'ADMIN') {
+        // admin can't access seller or user routes
+        if (
+          sellerRoutes.some(route => pathname.startsWith('/seller')) ||
+          (!adminRoutes.some(route => pathname.startsWith('/admin')) &&
+            pathname !== '/admin')
+        ) {
+          return NextResponse.redirect(new URL('/admin', request.url));
+        }
+      }
+
+      return NextResponse.next();
+    } catch (e) {
+      console.error('Token verification failed', e);
+
+      const refreshResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh-token`,
+        {
+          method: 'POST',
+          credentials: 'include',
+        }
+      );
+
+      if (refreshResponse.ok) {
+        const response = NextResponse.next();
+        response.cookies.set(
+          'accessToken',
+          refreshResponse.headers.get('Set-Cookie') || ''
+        );
+        return response;
+      } else {
+        const response = NextResponse.redirect(
+          new URL('/auth/login', request.url)
+        );
+        response.cookies.delete('accessToken');
+        response.cookies.delete('refreshToken');
+        return response;
+      }
     }
-    return NextResponse.next();
   }
 
-  try {
-    const { payload } = await jwtVerify(
-      accessToken,
-      new TextEncoder().encode(process.env.JWT_SECRET!)
-    );
-
-    const { role } = payload as { role: string };
-
-    // ✅ USER restrictions
-    if (role === 'USER') {
-      if (
-        adminRoutes.some(route => pathname.startsWith('/admin')) ||
-        sellerRoutes.some(route => pathname.startsWith('/seller'))
-      ) {
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-    }
-
-    // ✅ SELLER restrictions
-    if (role === 'SELLER') {
-      if (adminRoutes.some(route => pathname.startsWith('/admin'))) {
-        return NextResponse.redirect(new URL('/seller', request.url));
-      }
-    }
-
-    // ✅ ADMIN restrictions
-    if (role === 'ADMIN') {
-      if (
-        sellerRoutes.some(route => pathname.startsWith('/seller')) ||
-        (!adminRoutes.some(route => pathname.startsWith('/admin')) &&
-          pathname !== '/admin')
-      ) {
-        return NextResponse.redirect(new URL('/admin', request.url));
-      }
-    }
-
-    return NextResponse.next();
-  } catch (e) {
-    console.error('Token verification failed', e);
-
-    const response = NextResponse.redirect(new URL('/auth/login', request.url));
-    response.cookies.delete('accessToken');
-    response.cookies.delete('refreshToken');
-    return response;
+  // Not logged in → only public routes allowed
+  if (!publicRoutes.includes(pathname)) {
+    return NextResponse.redirect(new URL('/auth/login', request.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {

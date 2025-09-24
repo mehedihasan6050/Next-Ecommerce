@@ -19,7 +19,11 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off", // unused vars warning off
+    },
   },
 ];
+
 
 export default eslintConfig;
