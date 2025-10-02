@@ -95,7 +95,7 @@ const CheckoutForm = ({ closeModal, productInfo, clearCart }: CheckoutFormProps)
         { withCredentials: true }
       );
         toast.success('Order Successful!')
-        router.push('/account')
+        router.push('/home/account')
         clearCart()
       } catch (err) {
         console.error(err)

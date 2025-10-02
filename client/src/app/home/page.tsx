@@ -7,9 +7,11 @@ import { ChevronRight } from 'lucide-react';
 import { useProductStore } from '@/store/useProductStore';
 import { categories } from '@/utils/config';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const router = useRouter();
   const { banners, featuredProducts, fetchFeaturedProducts, fetchBanners } =
     useSettingsStore();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -17,7 +19,7 @@ function HomePage() {
   const { fetchProductsForClient, products } = useProductStore();
 
 
-
+  
 
 
   useEffect(() => {
@@ -59,6 +61,10 @@ if (filterType === 'categories' && value === 'All') {
     );
   };
 
+  const handleNavigate = () => {
+    router.push('/home/listing')
+  }
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -93,7 +99,7 @@ if (filterType === 'categories' && value === 'All') {
                   <br />
                   High Performance E-Commerce Theme
                 </p>
-                <Button className="bg-white text-black hover:bg-gray-100 px-8 py-6 text-lg">
+                <Button onClick={handleNavigate} className="bg-white text-black hover:bg-gray-100 px-8 py-6 text-lg">
                   SHOP NOW
                 </Button>
               </div>
@@ -127,7 +133,7 @@ if (filterType === 'categories' && value === 'All') {
                   Top Categories
                 </span>
               </h2>
-              <Link href="/listing" className="flex items-center text-gray-600  transition-colors">
+              <Link href="/home/listing" className="flex items-center text-gray-600  transition-colors">
                 View All
                 <ChevronRight className="ml-1 h-4 w-4" />
               </Link>

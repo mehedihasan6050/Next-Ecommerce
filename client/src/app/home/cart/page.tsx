@@ -205,13 +205,13 @@ function UserCartPage() {
               <span className="font-bold text-xl ml-4">${total.toFixed(2)}</span>
             </div>
             <Button
-              onClick={() => router.push('/checkout')}
+              onClick={() => router.push('/home/checkout')}
               className="w-full bg-black text-white h-12 text-base"
             >
               PROCEED TO CHECKOUT
             </Button>
             <Button
-              onClick={() => router.push('/listing')}
+              onClick={() => router.push('/home/listing')}
               className="w-full h-12 text-base"
               variant="outline"
             >

@@ -238,7 +238,7 @@ function CheckoutContent() {
                   </div>
                 ))}
                 <Button 
-                  onClick={() => router.push('/account')}
+                  onClick={() => router.push('/home/account')}
                   className="mt-2 text-sm sm:text-base"
                 >
                   Add a new Address

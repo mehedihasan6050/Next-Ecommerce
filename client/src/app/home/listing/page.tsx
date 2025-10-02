@@ -260,7 +260,7 @@ function ProductListingPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                 {products.map(productItem => (
                   <div
-                    onClick={() => router.push(`/listing/${productItem.id}`)}
+                    onClick={() => router.push(`/home/listing/${productItem.id}`)}
                     key={productItem.id}
                     className="group border rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-300"
                   >
