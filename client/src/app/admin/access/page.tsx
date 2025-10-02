@@ -16,8 +16,15 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 
+type RequestUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+};
+
 function AccessPage() {
-  const [requestUser, setRequestUser] = useState([])
+  const [requestUser, setRequestUser] = useState<RequestUser[]>([])
   const {  roleChange  } = useAuthStore()
   
 // Use a ref to track if the request has been made
