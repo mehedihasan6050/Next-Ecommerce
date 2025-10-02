@@ -3,6 +3,7 @@
 import Sidebar from '@/components/admin/adminSidebar';
 import NavBar from '@/components/seller/navbar';
 import { cn } from '@/lib/utils';
+import ProtectedRoute from '@/security/ProtectedRoute';
 import { useState } from 'react';
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -10,6 +11,9 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
+        <ProtectedRoute allowedRoles={["ADMIN"]}>
+      
+    
       <Sidebar
         isOpen={isSidebarOpen}
         toggle={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -22,9 +26,11 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
           'min-h-screen'
         )}
       >
+        
         <NavBar />
         {children}
-      </div>
+        </div>
+        </ProtectedRoute>
     </div>
   );
 }

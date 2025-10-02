@@ -80,19 +80,7 @@ export const useAuthStore = create<AuthStore>()(
           });
 
           set({ isLoading: false, user: response.data.user });
-
-          
-    const role = response.data.user.role;
-    if (role === "USER") {
-      window.location.href = "/";
-    } else if (role === "SELLER") {
-      window.location.href = "/seller";
-    } else if (role === "ADMIN") {
-      window.location.href = "/admin";
-    }
-
-    return true;
-    
+          return true;
         } catch (error) {
           set({
             isLoading: false,

@@ -27,9 +27,8 @@ async function setTokens(
   // Access token (1 hour)
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: true,          // HTTPS required
-    sameSite: "none",      // cross-domain
-    path: "/",
+    secure: true,         
+    sameSite: "none",      
     maxAge: 60 * 60 * 1000,
   });
 
@@ -37,8 +36,7 @@ async function setTokens(
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "none",      // cross-domain
-    path: "/",
+    sameSite: "none",      
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 }

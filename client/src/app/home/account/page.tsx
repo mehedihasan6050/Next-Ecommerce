@@ -128,9 +128,6 @@ function UserAccountPage() {
   const handleRequest = async () => {
 
 
-    if(user?.role === "SELLER") {
-      return toast.info("You've Already Seller")
-    }
 
     if(user?.roleRequest) {
       return toast.info("You've Already Requested")

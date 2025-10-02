@@ -48,7 +48,7 @@ export function HomeNavBar() {
   const handleNavigate = () => {
     setSearch([]);
     setQuery('');
-    router.push('/listing');
+    router.push('/home/listing');
     setMobileSearchOpen(false);
   };
 
@@ -63,7 +63,7 @@ export function HomeNavBar() {
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
-          <Link href="/" className="text-2xl font-bold">
+          <Link href="/home" className="text-2xl font-bold">
             NextEcom
           </Link>
         </div>
@@ -87,7 +87,7 @@ export function HomeNavBar() {
                   key={item.id}
                   className="flex items-center gap-3 p-2 hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
-                    router.push(`/listing/${item.id}`);
+                    router.push(`/home/listing/${item.id}`);
                     setSearch([]);
                     setQuery('');
                   }}
@@ -123,7 +123,7 @@ export function HomeNavBar() {
         <div className="hidden md:flex items-center gap-6">
           
           <div>
-            <Link href="/listing" className="text-sm font-medium">
+            <Link href="/home/listing" className="text-sm font-medium">
               Products
             </Link>
           </div>
@@ -146,18 +146,10 @@ export function HomeNavBar() {
                 <DropdownMenuContent className="w-56" align="start">
                   <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
                   <DropdownMenuItem>
-                    <Link href="/account">My Account</Link>
+                    <Link href="/home/account">My Account</Link>
                   </DropdownMenuItem>
-                  {user?.role === 'SELLER' && (
-                    <DropdownMenuItem>
-                      <Link href="/seller">Seller DashBoard</Link>
-                    </DropdownMenuItem>
-                  )}
-                   {user?.role === 'ADMIN' && (
-                    <DropdownMenuItem>
-                      <Link href="/admin">Admin DashBoard</Link>
-                    </DropdownMenuItem>
-                  )}
+                 
+                   
                   <DropdownMenuItem>
                     <button onClick={handleLogout} className="cursor-pointer">
                       Logout
@@ -177,7 +169,7 @@ export function HomeNavBar() {
           )}
 
           <Link
-            href="/cart"
+            href="/home/cart"
             className="flex items-center gap-2 text-gray-700 hover:text-gray-900 cursor-pointer relative"
           >
             <ShoppingCart className="h-4 w-4" />
@@ -197,7 +189,7 @@ export function HomeNavBar() {
 {/* Mobile cart icon */} 
         <div className="md:hidden">
           <Link
-            href="/cart"
+            href="/home/cart"
             className="relative p-2"
           >
             <ShoppingCart className="h-5 w-5" />
@@ -225,7 +217,7 @@ export function HomeNavBar() {
               <X className="h-10 w-10" />
             </button>
             <Link 
-              href="/listing" 
+              href="/home/listing" 
               className="text-lg font-medium py-2 border-b"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -235,21 +227,13 @@ export function HomeNavBar() {
             {user ? (
               <>
                 <Link 
-                  href="/account" 
+                  href="/home/account" 
                   className="text-lg font-medium py-2 border-b"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   My Account
                 </Link>
-                {user?.role === 'SELLER' && (
-                  <Link 
-                    href="/seller" 
-                    className="text-lg font-medium py-2 border-b"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Seller Dashboard
-                  </Link>
-                )}
+               
                 <button 
                   onClick={handleLogout} 
                   className="text-lg font-medium py-2 border-b text-left"
@@ -298,7 +282,7 @@ export function HomeNavBar() {
                     key={item.id}
                     className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer border-b"
                     onClick={() => {
-                      router.push(`/listing/${item.id}`);
+                      router.push(`/home/listing/${item.id}`);
                       setSearch([]);
                       setQuery('');
                       setMobileSearchOpen(false);

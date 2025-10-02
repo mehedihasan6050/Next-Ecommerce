@@ -28,14 +28,12 @@ const navigationItems = [
   { icon: Package, label: 'Products', href: '/seller/products' },
   { icon: Puzzle, label: 'Coupons', href: '/seller/coupons' },
   { icon: List, label: 'Orders', href: '/seller/orders' },
-  // { icon: Settings, label: 'Settings', href: '/admin/settings' },
+  { icon: LucideLogOut, label: 'Logout', href: '' }
+
+
 ];
 
-const pageItems = [
-  { icon: Home, label: 'Home', href: '/' },
-  { icon: ShoppingCart, label: 'Products', href: '/listing' },
-  { icon: LucideLogOut, label: 'Logout', href: '' },
-];
+
 
 function Sidebar({ isOpen, toggle }: SidebarProps) {
   const router = useRouter();
@@ -83,7 +81,11 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
             {navigationItems.map(item => (
               <div
                 key={item.label}
-                onClick={() => router.push(item.href)}
+                onClick={
+                    item.label === 'Logout'
+                      ? handleLogout
+                      : () => router.push(item.href)
+                  }
                 className={cn(
                   'flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
                   pathname === item.href
@@ -99,29 +101,7 @@ function Sidebar({ isOpen, toggle }: SidebarProps) {
             ))}
           </nav>
   
-          <div className="mt-8">
-            <h3 className={`px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 ${isOpen ? 'block' : 'hidden'  }`}>
-              PAGES
-            </h3>
-            <nav className="space-y-1">
-              {pageItems.map(item => (
-                <div
-                  key={item.label}
-                  onClick={
-                    item.label === 'Logout'
-                      ? handleLogout
-                      : () => router.push(item.href)
-                  }
-                  className="flex cursor-pointer items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
-                >
-                  <item.icon className="w-5 h-5" />
-                  <span className={cn('ml-3', !isOpen && 'hidden')}>
-                    {item.label}
-                  </span>
-                </div>
-              ))}
-            </nav>
-          </div>
+         
         </div>
         </div>
   

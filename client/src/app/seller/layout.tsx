@@ -3,6 +3,7 @@
 import NavBar from '@/components/seller/navbar';
 import Sidebar from '@/components/seller/sidebar';
 import { cn } from '@/lib/utils';
+import ProtectedRoute from '@/security/ProtectedRoute';
 import { useState } from 'react';
 
 function SellerLayout({ children }: { children: React.ReactNode }) {
@@ -10,6 +11,7 @@ function SellerLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
+       <ProtectedRoute allowedRoles={["SELLER"]}>
       {/* Sidebar */}
       <Sidebar
         isOpen={isSidebarOpen}
@@ -27,6 +29,7 @@ function SellerLayout({ children }: { children: React.ReactNode }) {
         <NavBar />
         {children}
       </div>
+       </ProtectedRoute>
     </div>
   );
 }

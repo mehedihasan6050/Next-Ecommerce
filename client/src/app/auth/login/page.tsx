@@ -51,7 +51,7 @@ function LoginPage() {
 }   else if (user?.role === 'SELLER') {
     router.push('/seller');
 }   else {
-    router.push('/');
+    router.push('/home');
 }
 
     }
