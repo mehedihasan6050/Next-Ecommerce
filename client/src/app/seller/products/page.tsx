@@ -12,7 +12,7 @@ import {
 import { useProductStore } from '@/store/useProductStore';
 import { Pencil, Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import AddProductModal from '@/components/seller/addProduct';
 import UpdateProductModal from '@/components/seller/updateProduct';
 import Swal from 'sweetalert2';

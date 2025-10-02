@@ -1,14 +1,7 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
+
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -18,15 +11,35 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useAuthStore } from '@/store/useAuthStore';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
+import { API_ROUTES } from '@/utils/api';
+import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 
 function AccessPage() {
-  const { fetchRequest, roleChange, requestUser } = useAuthStore()
+  const [requestUser, setRequestUser] = useState([])
+  const {  roleChange  } = useAuthStore()
   
+// Use a ref to track if the request has been made
+  const requestMadeRef = useRef(false);
+  
+  const fetchRequest = async () => {
+    try {
+      const res = await axios.get(`${API_ROUTES.AUTH}/fetch-request`, {
+         withCredentials: true
+      })
+      setRequestUser(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  } 
+
 useEffect(()=>{
-  fetchRequest()
+  // Only fetch requests once and never again
+  if (!requestMadeRef.current) {
+    fetchRequest();
+    requestMadeRef.current = true;
+  }
 }, [])
   
   

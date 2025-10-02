@@ -1,34 +1,45 @@
+'use client';
+
 import LoadingSpinner from "@/components/loading/Loading";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-interface Props { children: React.ReactNode; allowedRoles: string[]; }
+interface Props {
+  children: React.ReactNode;
+  allowedRoles: string[];
+}
 
 const ProtectedRoute = ({ children, allowedRoles }: Props) => {
   const router = useRouter();
   const { user, isLoading } = useAuthStore();
+  const [hydrated, setHydrated] = useState(false);
+
+  
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!user) {
-        router.replace("/auth/login");
-        return;
-      }
+    if (!hydrated || isLoading) return;
 
-      if (!allowedRoles.includes(user.role)) {
-        const redirectPath =
-          user.role === "USER"
-            ? "/home"
-            : user.role === "SELLER"
-            ? "/seller"
-            : "/admin";
-        router.replace(redirectPath);
-      }
+    if (!user) {
+      router.replace("/auth/login");
+      return;
     }
-  }, [user, isLoading, router, allowedRoles]);
 
-  if (!user || isLoading) return <LoadingSpinner />;
+    if (!allowedRoles.includes(user.role)) {
+      const redirectPath =
+        user.role === "USER" ? "/home" :
+        user.role === "SELLER" ? "/seller" :
+        "/admin";
+      router.replace(redirectPath);
+    }
+  }, [user, isLoading, hydrated]);
+
+  
+  if (isLoading || !hydrated) return <LoadingSpinner />;
+
   return <>{children}</>;
 };
 
