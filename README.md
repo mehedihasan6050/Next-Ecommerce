@@ -5,6 +5,7 @@ A full-stack e-commerce platform built with Next.js, Express.js, and PostgreSQL.
 ## 🚀 Features
 
 ### 👤 User Features
+
 - **User Registration & Authentication** - Secure JWT-based authentication with refresh tokens
 - **Product Browsing** - Browse products by category, brand, size, and color
 - **Shopping Cart** - Add/remove items with size and color selection
@@ -14,6 +15,7 @@ A full-stack e-commerce platform built with Next.js, Express.js, and PostgreSQL.
 - **Coupon System** - Apply discount coupons during checkout
 
 ### 🏪 Seller Features
+
 - **Product Management** - Add, edit, and manage product listings
 - **Inventory Management** - Track stock levels and sales
 - **Order Management** - View and process customer orders
@@ -22,13 +24,12 @@ A full-stack e-commerce platform built with Next.js, Express.js, and PostgreSQL.
 - **Dashboard** - Comprehensive seller dashboard
 
 ### 👑 Admin Features
+
 - **User Management** - Manage user roles and permissions
 - **Seller Approval** - Approve/reject seller role requests
 - **System Settings** - Configure platform settings
 - **Access Control** - Manage user access and permissions
 - **Analytics Dashboard** - System-wide analytics and metrics
-
-
 
 ## 📁 Project Structure
 
@@ -68,10 +69,10 @@ Next-Ecommerce/
 └── README.md
 ```
 
-
 ## 🏗️ Tech Stack
 
 ### Frontend
+
 - **Next.js**
 - **TypeScript**
 - **Tailwind CSS**
@@ -81,6 +82,7 @@ Next-Ecommerce/
 - **Shadcn**
 
 ### Backend
+
 - **Express.js**
 - **TypeScript**
 - **Prisma**
@@ -92,13 +94,14 @@ Next-Ecommerce/
 - **Stripe**
 
 ### DevOps & Tools
+
 - **Docker Compose** - Containerization
 - **Arcjet** - Security and rate limiting
-
 
 ## 🔌 API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
 - `POST /api/auth/refresh` - Refresh access token
@@ -107,6 +110,7 @@ Next-Ecommerce/
 - `PUT /api/auth/role/:id` - Admin role management
 
 ### Products
+
 - `GET /api/products` - Get all products
 - `GET /api/products/:id` - Get product by ID
 - `POST /api/products` - Create product (Seller/Admin)
@@ -114,6 +118,7 @@ Next-Ecommerce/
 - `DELETE /api/products/:id` - Delete product (Seller/Admin)
 
 ### Cart
+
 - `GET /api/cart` - Get user cart
 - `POST /api/cart/add` - Add item to cart
 - `PUT /api/cart/update` - Update cart item
@@ -121,34 +126,45 @@ Next-Ecommerce/
 - `DELETE /api/cart/clear` - Clear cart
 
 ### Orders
+
 - `GET /api/order` - Get user orders
 - `POST /api/order` - Create order
 - `PUT /api/order/:id` - Update order status
 
 ### Address
+
 - `GET /api/address` - Get user addresses
 - `POST /api/address` - Add address
 - `PUT /api/address/:id` - Update address
 - `DELETE /api/address/:id` - Delete address
 
 ### Coupons
+
 - `GET /api/coupon` - Get available coupons
 - `POST /api/coupon` - Create coupon (Seller/Admin)
 - `DELETE /api/coupon/:id` - Delete coupon (Seller/Admin)
 
 ### Dashboard
+
 - `GET /api/dashboard/stats` - Get dashboard statistics
 - `GET /api/dashboard/sales` - Get sales analytics
+
+## Credentials
+
+- Mail - `admin@ecom.com`
+- Pass - `admin123`
 
 ## 🚀 Installation Guide
 
 ### Prerequisites
+
 - Node.js (v18 or higher)
 - npm or yarn
 - PostgreSQL
 - Docker (optional, for database)
 
 ### 1. Clone the Repository
+
 ```bash
 git clone <repository-url>
 cd Next-Ecommerce
@@ -157,12 +173,14 @@ cd Next-Ecommerce
 ### 2. Database Setup
 
 #### Option A: Using Docker (Recommended)
+
 ```bash
 # Start PostgreSQL with Docker
 docker-compose up -d postgres
 ```
 
 ### 3. Backend Setup
+
 ```bash
 cd server
 
@@ -183,6 +201,7 @@ npm run dev
 ```
 
 ### 4. Frontend Setup
+
 ```bash
 cd client
 
@@ -194,6 +213,7 @@ npm run dev
 ```
 
 ### 5. Access the Application
+
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3001
 - Database: localhost:5434 (if using Docker)
@@ -203,6 +223,7 @@ npm run dev
 Create `.env` files in both `client/` and `server/` directories:
 
 ### Server `.env`
+
 ```env
 # Database
 DATABASE_URL="postgresql://username:password@localhost:port/dbname"
@@ -227,6 +248,7 @@ PORT=3001
 ```
 
 ### Client `.env`
+
 ```env
 # API
 NEXT_PUBLIC_API_URL="http://localhost:3001"
