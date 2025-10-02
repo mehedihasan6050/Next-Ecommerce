@@ -190,7 +190,9 @@ function UserAccountPage() {
       <div className="container mx-auto px-4">
         <div className="mb-8 flex justify-between items-center">
           <h1 className="md:text-3xl text-base font-bold">MY ACCOUNT</h1>
-          <Button disabled={user?.roleRequest} onClick={handleRequest} className='text-xl font-bold cursor-pointer'>{user?.roleRequest? "You've Already Requested" : 'Request For Seller'}</Button>
+          {
+            user?.role === "USER" && <Button disabled={user?.roleRequest} onClick={handleRequest} className='text-xl font-bold cursor-pointer'>{user?.roleRequest? "You've Already Requested" : 'Request For Seller'}</Button>
+          }
      
         </div>
         <Tabs defaultValue="orders" className="space-y-4">

@@ -24,19 +24,26 @@ async function setTokens(
   accessToken: string,
   refreshToken: string
 ) {
-  res.cookie('accessToken', accessToken, {
+  // Access token (1 hour)
+  res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    secure: true,
-    sameSite: 'none',
+    secure: true,          // HTTPS required
+    sameSite: "none",      // cross-domain
+    path: "/",
     maxAge: 60 * 60 * 1000,
   });
-  res.cookie('refreshToken', refreshToken, {
+
+  // Refresh token (7 days)
+  res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: 'none',
-    maxAge: 7 * 24 * 60 * 60,
+    sameSite: "none",      // cross-domain
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 }
+
+
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
